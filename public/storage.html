@@ -1,0 +1,76 @@
+<html>
+
+<head>
+  <title>Running Distance Map Storage</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+</head>
+<style>
+  * {
+    margin-bottom: 10px;
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  a {
+    color: #60a0ff;
+  }
+
+  img {
+    margin: 0 auto;
+    width: 32px;
+    height: 32px;
+  }
+
+  .overall-usage {
+    font-size: 1.5em;
+  }
+
+  .storage-list span {
+    font-style: italic;
+  }
+
+  .center-container {
+    display: flex;
+    margin: 10px;
+  }
+
+  .center-container button {
+    margin: 0 auto;
+    height: 30px;
+    width: 90px;
+    background-color: rgb(75, 129, 232);
+    color: #fff;
+    border-radius: 6px;
+    border-color: transparent;
+  }
+
+  .center-container button:hover {
+    background-color: rgb(113, 167, 255);
+  }
+</style>
+<div class="center-container">
+  <img src="./pin-icon.png">
+</div>
+<div class="overall-usage">
+  We use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">LocalStorage</a>
+  as a mechanism to improve the functionality of this site. See below for a listing of what's stored
+  and why.
+</div>
+<div class="storage-list">
+  - <span class="storage-key">runmap-last_focus</span>: The center of the map when the user last interacted with it.
+  Used to re-center the map on
+  where you last interacted with a run for future visits to the site.
+</div>
+<div class="storage-list">
+  - <span class="storage-key">runmap-storage_notice</span>: Whether or not you've dismissed the storage notice.
+</div>
+
+<div class="center-container">
+  <button onclick="window.close()">Return</button>
+</div>
+
+</html>

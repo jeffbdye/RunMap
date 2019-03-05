@@ -1,0 +1,41 @@
+{
+  "name": "runmap",
+  "version": "1.0.0",
+  "description": "Running map distance app",
+  "main": "bundle.js",
+  "scripts": {
+    "test": "jasmine",
+    "lint": "tslint --project tslint.json",
+    "serve": "webpack-dev-server --config webpack-serve.config.js",
+    "build": "webpack --config webpack-build.config.js",
+    "build:test": "tsc -p tsconfig.test.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeffbdye/RunMap.git"
+  },
+  "author": "Jeff Dye",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/jeffbdye/RunMap/issues"
+  },
+  "homepage": "https://github.com/jeffbdye/RunMap#readme",
+  "devDependencies": {
+    "@types/jasmine": "3.3.9",
+    "@types/mapbox-gl": "0.51.4",
+    "@types/uuid": "3.4.4",
+    "jasmine": "3.3.1",
+    "ts-loader": "5.3.3",
+    "tslint": "5.12.1",
+    "typescript": "3.3.3",
+    "webpack": "4.29.5",
+    "webpack-cli": "3.2.3",
+    "webpack-dev-server": "3.2.0",
+    "webpack-merge": "4.2.1"
+  },
+  "dependencies": {
+    "@mapbox/mapbox-sdk": "0.6.0",
+    "mapbox-gl": "0.53.0",
+    "uuid": "3.3.2"
+  }
+}

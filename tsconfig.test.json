@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "spec/.working"
+  },
+  "extends": "./tsconfig.json",
+  "include": [
+    "./src/*.spec.ts"
+  ],
+}

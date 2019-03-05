@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <title>Running Distance Map</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link href="styles.css" rel="stylesheet" type="text/css">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  </head>
+
+  <div id="mapbox-container"></div>
+  <div id="run-length" class="map-overlay">
+    0m
+  </div>
+  <div id="remove-last" class="map-overlay">
+    <i class="fas fa-arrow-left"></i>
+  </div>
+  <div id="storage-notice" class="map-overlay" style="display: none">
+    <div>
+      We use LocalStorage to improve this site's functionality. See <a target="_blank" href="storage.html">here</a> to learn more.
+    </div>
+    <button id="accept-storage">Got it!</button>
+  </div>
+  <script src="vendor.js"></script>
+  <script src="app.js"></script>
+</html>
