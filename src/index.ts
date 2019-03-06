@@ -25,10 +25,11 @@ let map = new Map({
 let directionsService: DirectionsService = directionsFactory({ accessToken: mbk });
 let currentRun: CurrentRun = undefined;
 
-let lengthEl = document.getElementById('run-length');
-let storageEl = document.getElementById('storage-notice');
-let acceptStorageEl = document.getElementById('accept-storage');
-let removeLastEl = document.getElementById('remove-last');
+let lengthElement = document.getElementById('run-length');
+let storageElement = document.getElementById('storage-notice');
+let acceptStorageElement = document.getElementById('accept-storage');
+let removeLastElement = document.getElementById('remove-last');
+let isWaiting = false;
 setupUserControls();
 
 map.on('load', () => {
@@ -51,24 +52,9 @@ map.on('load', () => {
 
 // click or tap
 map.on('click', (e: MapMouseEvent) => {
-  if (currentRun === undefined) {
-    let start = new RunStart(
-        e.lngLat,
-        e.point
-      );
-    start.marker = addMarker(e.lngLat, true);
-    currentRun = new CurrentRun(start);
-    removeLastEl.classList.remove('slide-out');
-    removeLastEl.classList.add('slide-in');
-  } else {
-    let newSegment = new RunSegment(
-        uuid(),
-        e.lngLat,
-        e.point
-       );
-    let prev = currentRun.getLastPosition();
-    applyRoute(newSegment, prev, e);
-    currentRun.addSegment(newSegment);
+  if (!isWaiting) {
+    setWaiting(true);
+    addNewPoint(e);
   }
   const center = map.getCenter();
   const pos = {
@@ -79,6 +65,29 @@ map.on('click', (e: MapMouseEvent) => {
   } as Position;
   stashCurrentFocus(pos);
 });
+
+function addNewPoint(e: MapMouseEvent): void {
+  if (currentRun === undefined) {
+    let start = new RunStart(
+        e.lngLat,
+        e.point
+      );
+    start.marker = addMarker(e.lngLat, true);
+    currentRun = new CurrentRun(start);
+    removeLastElement.classList.remove('slide-out');
+    removeLastElement.classList.add('slide-in');
+    setWaiting(false);
+  } else {
+    let newSegment = new RunSegment(
+        uuid(),
+        e.lngLat,
+        e.point
+       );
+    let prev = currentRun.getLastPosition();
+    applyRoute(newSegment, prev, e);
+    currentRun.addSegment(newSegment);
+  }
+}
 
 function applyRoute(newSegment: RunSegment, previousPoint: LngLat, e: MapMouseEvent) {
   directionsService.getDirections({
@@ -115,8 +124,10 @@ function applyRoute(newSegment: RunSegment, previousPoint: LngLat, e: MapMouseEv
     } else {
       alert(`Non-successful status code when getting directions: ${JSON.stringify(res)}`);
     }
+    setWaiting(false);
   }, err => {
     alert(`An error occurred: ${JSON.stringify(err)}`);
+    setWaiting(false);
   });
 }
 
@@ -144,15 +155,15 @@ function stashCurrentFocus(pos: Position): void {
 
 function setupUserControls(): void {
   if (!JSON.parse(localStorage.getItem(STORAGE_NOTICE_KEY))) {
-    storageEl.style.display = 'block';
+    storageElement.style.display = 'block';
   }
-  acceptStorageEl.onclick = hideStorageElement;
+  acceptStorageElement.onclick = hideStorageElement;
 
-  removeLastEl.onclick = removeLastSegment;
+  removeLastElement.onclick = removeLastSegment;
 }
 
 function hideStorageElement(): void {
-  storageEl.style.display = 'none';
+  storageElement.style.display = 'none';
   localStorage.setItem(STORAGE_NOTICE_KEY, JSON.stringify(true));
 }
 
@@ -170,8 +181,8 @@ function removeLastSegment(): void {
       currentRun.start.marker.remove();
       updateLengthElement();
       currentRun = undefined;
-      removeLastEl.classList.remove('slide-in');
-      removeLastEl.classList.add('slide-out');
+      removeLastElement.classList.remove('slide-in');
+      removeLastElement.classList.add('slide-out');
     }
   }
 }
@@ -205,7 +216,7 @@ function layerFromDirectionsResponse(id: string, route: number[][]): Layer {
 }
 
 function updateLengthElement(): void {
-  lengthEl.innerText = currentRun.getFormattedDistance();
+  lengthElement.innerText = currentRun.getFormattedDistance();
 }
 
 function addMarker(pos: LngLat, isStart: boolean): Marker {
@@ -214,4 +225,9 @@ function addMarker(pos: LngLat, isStart: boolean): Marker {
     color: isStart ? '#00BD00' : undefined
   }).setLngLat(pos)
     .addTo(map);
+}
+
+function setWaiting(toWait: boolean): void {
+  isWaiting = toWait;
+  // TODO - loading spinner here?
 }

@@ -9,5 +9,5 @@ Running map distance app
 - Credits & attribution
 
 # Thanks
-https://realfavicongenerator.net/ - favicons
-https://github.com/mikeomeara1 - mapbox-sdk types
+- https://github.com/mikeomeara1 - mapbox-sdk types
+- https://realfavicongenerator.net/ - favicons

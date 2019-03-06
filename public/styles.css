@@ -35,7 +35,7 @@ body {
 #remove-last {
   cursor: pointer;
   top: 62px;
-  right: -34px;
+  right: -40px;
   animation-duration: .5s;
   animation-fill-mode: forwards;
 }
@@ -53,6 +53,11 @@ body {
   border-radius: 6px;
 }
 
+#waiting {
+  bottom: 20px;
+  right: 30px;
+}
+
 .slide-in {
   animation-name: slide-in;
 }
@@ -68,7 +73,7 @@ body {
 
   to {
     opacity: 1;
-    transform: translate(-39px, 0px);
+    transform: translate(-45px, 0px);
   }
 }
 
@@ -80,6 +85,6 @@ body {
 
   to {
     opacity: 0;
-    transform: translate(39px, 0px);
+    transform: translate(45px, 0px);
   }
 }
