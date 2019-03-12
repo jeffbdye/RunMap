@@ -1,8 +1,5 @@
 pipeline {    
     agent any
-    environment {
-        mapbox_key = credentials('mapbox_key')
-    }
     stages {
         stage('Install') {
             steps {
