@@ -7,6 +7,9 @@ Running map distance app
 - Proper types to import @mapbox/mapbox-sdk
 - Simple instructions in-app
 - Credits & attribution
+- Mile markers along line
+- Run distance at any point on line
+- Elevation along run
 
 # Thanks
 - https://github.com/mikeomeara1 - mapbox-sdk types

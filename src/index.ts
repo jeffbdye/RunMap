@@ -10,6 +10,7 @@ const directionsFactory: Directions = require('@mapbox/mapbox-sdk/services/direc
 
 const LAST_FOCUS_KEY = 'runmap-last_focus';
 const STORAGE_NOTICE_KEY = 'runmap-storage_notice';
+const USE_METRIC_KEY = 'runmap-use_metric';
 const mbk = atob(ps);
 
 const initialFocus = loadLastOrDefaultFocus();
@@ -30,6 +31,7 @@ let storageElement = document.getElementById('storage-notice');
 let acceptStorageElement = document.getElementById('accept-storage');
 let removeLastElement = document.getElementById('remove-last');
 let isWaiting = false;
+let useMetric = loadMetricPreferences();
 setupUserControls();
 
 map.on('load', () => {
@@ -77,6 +79,7 @@ function addNewPoint(e: MapMouseEvent): void {
     removeLastElement.classList.remove('slide-out');
     removeLastElement.classList.add('slide-in');
     setWaiting(false);
+    updateLengthElement();
   } else {
     let newSegment = new RunSegment(
         uuid(),
@@ -133,7 +136,7 @@ function applyRoute(newSegment: RunSegment, previousPoint: LngLat, e: MapMouseEv
 
 function loadLastOrDefaultFocus(): MapFocus {
   let initialPosition = JSON.parse(localStorage.getItem(LAST_FOCUS_KEY)) as MapFocus;
-  if (initialPosition === null) {
+  if (initialPosition === undefined) {
     initialPosition = {
       lng: -79.93775232392454,
       lat: 32.78183341484467,
@@ -153,6 +156,10 @@ function stashCurrentFocus(pos: Position): void {
   localStorage.setItem(LAST_FOCUS_KEY, JSON.stringify(currentFocus));
 }
 
+function loadMetricPreferences(): boolean {
+  return localStorage.getItem(USE_METRIC_KEY) === 'true';
+}
+
 function setupUserControls(): void {
   if (!JSON.parse(localStorage.getItem(STORAGE_NOTICE_KEY))) {
     storageElement.style.display = 'block';
@@ -160,11 +167,20 @@ function setupUserControls(): void {
   acceptStorageElement.onclick = hideStorageElement;
 
   removeLastElement.onclick = removeLastSegment;
+
+  lengthElement.onclick = toggleDistanceUnits;
 }
 
 function hideStorageElement(): void {
   storageElement.style.display = 'none';
-  localStorage.setItem(STORAGE_NOTICE_KEY, JSON.stringify(true));
+  localStorage.setItem(USE_METRIC_KEY, JSON.stringify(true));
+}
+
+function toggleDistanceUnits(): void {
+  useMetric = !useMetric;
+  updateLengthElement();
+  // ugh
+  localStorage.setItem(USE_METRIC_KEY, '' + useMetric);
 }
 
 function removeLastSegment(): void {
@@ -216,7 +232,7 @@ function layerFromDirectionsResponse(id: string, route: number[][]): Layer {
 }
 
 function updateLengthElement(): void {
-  lengthElement.innerText = currentRun.getFormattedDistance();
+  lengthElement.innerText = currentRun.getFormattedDistance(useMetric);
 }
 
 function addMarker(pos: LngLat, isStart: boolean): Marker {
@@ -229,5 +245,5 @@ function addMarker(pos: LngLat, isStart: boolean): Marker {
 
 function setWaiting(toWait: boolean): void {
   isWaiting = toWait;
-  // TODO - loading spinner here?
+  // TODO - loading spinner?
 }

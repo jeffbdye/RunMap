@@ -7,7 +7,7 @@
     "test": "jasmine",
     "lint": "tslint --project tslint.json",
     "serve": "webpack-dev-server --config webpack-serve.config.js",
-    "build": "webpack --config webpack-build.config.js",
+    "build:deploy": "webpack --config webpack-build.config.js",
     "build:test": "tsc -p tsconfig.test.json"
   },
   "repository": {
