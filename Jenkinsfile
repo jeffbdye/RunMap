@@ -17,7 +17,7 @@ pipeline {
         stage('Secrets') {
             steps {
                 echo 'Setting up secrets...'
-                sh 'bash sh/secrets.sh'
+                sh 'bash sh/secrets.sh $MAPBOX_KEY'
             }
         }
         stage('Bundle') {

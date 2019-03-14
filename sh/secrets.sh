@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo `export const ps = '$MAPBOX_KEY';` > ./src/appsettings.secrets.ts;
+echo "export const ps = '$1';" > ./src/appsettings.test.secrets.ts;
