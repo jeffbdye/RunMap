@@ -5,6 +5,6 @@ runmap_now=`date +%Y-%m-%d--%H-%M-%S`
 mkdir /var/www/runmap.run/archive/$runmap_now
 mv /var/www/runmap.run/public/* /var/www/runmap.run/archive/$runmap_now
 mkdir /var/www/runmap.run/public
-cp /var/lib/jenkins/workspace/YeeText/public/* /var/www/runmap.run/public
+cp /var/lib/jenkins/workspace/RunMap/public/* /var/www/runmap.run/public
 chgrp buildusers /var/www/runmap.run/public
 unset runmap_now
