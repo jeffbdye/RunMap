@@ -17,7 +17,7 @@ pipeline {
         stage('Secrets') {
             steps {
                 echo 'Setting up secrets...'
-                sh 'bash sh/secrets.sh $MAPBOX_KEY'
+                sh 'sh sh/secrets.sh ${env.MAPBOX_KEY}'
             }
         }
         stage('Bundle') {
@@ -29,7 +29,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying...'
-                sh 'bash sh/deploy.sh'
+                sh 'sh sh/deploy.sh'
             }
         }
     }
