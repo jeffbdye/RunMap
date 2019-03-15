@@ -15,9 +15,11 @@ pipeline {
            }
         }
         stage('Secrets') {
-            steps {
-                echo 'Setting up secrets...'
-                writeFile file: './src/appsettings.secrets.ts', text: "export const ps = '${env.MAPBOX_KEY}';"
+            withCredentials([file(credentialsId: 'MAPBOX_SECRET', variable: 'MAPBOX_SECRET')]) {
+                steps {
+                    echo 'Setting up secrets...'
+                    sh 'cp $MAPBOX_SECRET ./src/appsettings.secrets.ts';
+                }
             }
         }
         stage('Bundle') {
