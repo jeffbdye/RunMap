@@ -136,7 +136,7 @@ function applyRoute(newSegment: RunSegment, previousPoint: LngLat, e: MapMouseEv
 
 function loadLastOrDefaultFocus(): MapFocus {
   let initialPosition = JSON.parse(localStorage.getItem(LAST_FOCUS_KEY)) as MapFocus;
-  if (initialPosition === undefined) {
+  if (initialPosition === null) {
     initialPosition = {
       lng: -79.93775232392454,
       lat: 32.78183341484467,
