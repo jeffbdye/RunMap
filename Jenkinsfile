@@ -15,9 +15,9 @@ pipeline {
            }
         }
         stage('Secrets') {
-            withCredentials([file(credentialsId: 'MAPBOX_SECRET', variable: 'MAPBOX_SECRET')]) {
-                steps {
-                    echo 'Setting up secrets...'
+            steps {
+                echo 'Setting up secrets...'
+                withCredentials([file(credentialsId: 'MAPBOX_SECRET', variable: 'MAPBOX_SECRET')]) {
                     sh 'cp $MAPBOX_SECRET ./src/appsettings.secrets.ts';
                 }
             }
