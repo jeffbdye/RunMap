@@ -157,7 +157,7 @@ function stashCurrentFocus(pos: Position): void {
 }
 
 function loadMetricPreferences(): boolean {
-  return localStorage.getItem(USE_METRIC_KEY) === 'true';
+  return localStorage.getItem(USE_METRIC_KEY) === 'true' || true;
 }
 
 function setupUserControls(): void {
@@ -173,7 +173,7 @@ function setupUserControls(): void {
 
 function hideStorageElement(): void {
   storageElement.style.display = 'none';
-  localStorage.setItem(USE_METRIC_KEY, JSON.stringify(true));
+  localStorage.setItem(STORAGE_NOTICE_KEY, JSON.stringify(true));
 }
 
 function toggleDistanceUnits(): void {
