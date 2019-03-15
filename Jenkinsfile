@@ -17,7 +17,6 @@ pipeline {
         stage('Secrets') {
             steps {
                 echo 'Setting up secrets...'
-                sh 'sh sh/secrets.sh $MAPBOX_KEY'
                 writeFile file: './src/appsettings.secrets.ts', text: "export const ps = '${env.MAPBOX_KEY}';"
             }
         }
