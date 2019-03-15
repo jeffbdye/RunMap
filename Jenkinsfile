@@ -17,7 +17,7 @@ pipeline {
         stage('Secrets') {
             steps {
                 echo 'Setting up secrets...'
-                sh 'sh sh/secrets.sh ${env.MAPBOX_KEY}'
+                sh 'sh sh/secrets.sh $env.MAPBOX_KEY'
             }
         }
         stage('Bundle') {
