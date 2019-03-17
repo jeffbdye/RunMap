@@ -81,20 +81,4 @@ export class CurrentRun {
     }
     return toRemove;
   }
-
-  public getFormattedDistance(useMetric: boolean): string {
-    let formatted = '';
-    if (useMetric) {
-      if (this.length < 1000) {
-        formatted = `${Math.round(this.length)}m`;
-      } else {
-        let km = this.length / 1000;
-        formatted = `${km.toFixed(2)}km`;
-      }
-    } else {
-      let mi = this.length * 0.000621371;
-      formatted = `${mi.toFixed(2)}mi`;
-    }
-    return formatted;
-  }
 }

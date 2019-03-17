@@ -14,3 +14,9 @@ Running map distance app
 # Thanks
 - https://github.com/mikeomeara1 - mapbox-sdk types
 - https://realfavicongenerator.net/ - favicons
+
+# Changelog
+- 3/16/19: Refactored distance formatting
+- 3/14/19: Setup Jenkins ci/cd
+- 3/11/19: Configure km/mi for distance
+- 3/4/19: Initial release

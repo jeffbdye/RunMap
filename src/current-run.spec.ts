@@ -7,7 +7,6 @@ describe('CurrentRun class', () => {
     let start = new RunStart({} as LngLat, {} as Point);
     let currentRun = new CurrentRun(start);
     expect(currentRun.length).toBe(0, 'No segments should be added with just a run start.');
-    expect(currentRun.getFormattedDistance(true)).toBe('0m', 'Distance should be zero with just a run start.');
   });
 
   it('should allow setting and updating a marker', () => {
@@ -79,24 +78,6 @@ describe('CurrentRun class', () => {
     expect(removed).toBeUndefined('Removing the last point should return undefined (no segments to remove).');
   });
 
-  it('formats distance correctly in metric', () => {
-    let currentRun = new CurrentRun(new RunStart({} as LngLat, {} as Point));
-    let initialDistance = 500;
-    currentRun.segmentDistanceUpdated(getMockSegment(), getMockMapiDirectionsResponse(initialDistance) as MapiResponse, {} as Marker);
-    expect(currentRun.getFormattedDistance(true)).toBe('500m');
-
-    let secondDistance = 1100;
-    currentRun.segmentDistanceUpdated(getMockSegment(), getMockMapiDirectionsResponse(secondDistance) as MapiResponse, {} as Marker);
-    expect(currentRun.getFormattedDistance(true)).toBe('1.60km');
-  });
-
-  it('formats distance correctly in miles', () => {
-    let currentRun = new CurrentRun(new RunStart({} as LngLat, {} as Point));
-    let initialDistance = 5000;
-    currentRun.segmentDistanceUpdated(getMockSegment(), getMockMapiDirectionsResponse(initialDistance) as MapiResponse, {} as Marker);
-    expect(currentRun.getFormattedDistance(false)).toBe('3.11mi');
-  });
-
   function getMockMapiDirectionsResponse(distance: number): Partial<MapiResponse> {
     const directionsResponse = {
       routes: [
@@ -114,9 +95,5 @@ describe('CurrentRun class', () => {
     return {
       remove: () => { }
     } as Marker;
-  }
-
-  function getMockSegment(): RunSegment {
-    return new RunSegment('some-id', {} as LngLat, {} as Point);
   }
 });
