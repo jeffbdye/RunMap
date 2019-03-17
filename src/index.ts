@@ -3,6 +3,7 @@ import { Map, Marker, MapMouseEvent, NavigationControl, GeolocateControl, LngLat
 import { v4 as uuid } from 'uuid';
 import { LineString } from 'geojson';
 import { CurrentRun, RunStart, RunSegment } from './current-run';
+import { getFormattedDistance } from './distance-formatter';
 import { MapFocus } from './map-focus';
 import { ps } from './appsettings.secrets';
 import { MapiResponse, Directions, DirectionsService, DirectionsResponse } from '../custom-typings/@mapbox_mapbox-sdk';
@@ -27,6 +28,7 @@ let directionsService: DirectionsService = directionsFactory({ accessToken: mbk 
 let currentRun: CurrentRun = undefined;
 
 let lengthElement = document.getElementById('run-length');
+let unitsElement = document.getElementById('run-units');
 let storageElement = document.getElementById('storage-notice');
 let acceptStorageElement = document.getElementById('accept-storage');
 let removeLastElement = document.getElementById('remove-last');
@@ -157,7 +159,12 @@ function stashCurrentFocus(pos: Position): void {
 }
 
 function loadMetricPreferences(): boolean {
-  return localStorage.getItem(USE_METRIC_KEY) === 'true' || true;
+  const setting = localStorage.getItem(USE_METRIC_KEY);
+  if (setting === null) {
+    return true;
+  } else {
+    return setting === 'true';
+  }
 }
 
 function setupUserControls(): void {
@@ -169,6 +176,7 @@ function setupUserControls(): void {
   removeLastElement.onclick = removeLastSegment;
 
   lengthElement.onclick = toggleDistanceUnits;
+  updateLengthElement();
 }
 
 function hideStorageElement(): void {
@@ -232,7 +240,10 @@ function layerFromDirectionsResponse(id: string, route: number[][]): Layer {
 }
 
 function updateLengthElement(): void {
-  lengthElement.innerText = currentRun.getFormattedDistance(useMetric);
+  const distance = currentRun ? currentRun.length : 0;
+  const fd = getFormattedDistance(distance, useMetric);
+  lengthElement.innerText = fd.roundedDistance;
+  unitsElement.innerText = fd.units;
 }
 
 function addMarker(pos: LngLat, isStart: boolean): Marker {

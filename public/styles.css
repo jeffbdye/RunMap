@@ -25,10 +25,25 @@ body {
   font-family: sans-serif;
 }
 
-#run-length {
+#run-menu {
   top: 10px;
   right: 5px;
+}
+
+#run-menu span {
+  margin-left: -2px;
+}
+
+#run-length {
   font-size: 25px;
+}
+
+#run-units {
+  font-size: 16px;
+}
+
+#menu-icon {
+  font-size: 12px;
 }
 
 #remove-last {
