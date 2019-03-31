@@ -31,7 +31,7 @@ body {
 }
 
 #run-menu span {
-  margin-left: -2px;
+  margin-left: -4px;
 }
 
 #run-length {
@@ -49,10 +49,12 @@ body {
 #remove-last {
   cursor: pointer;
   top: 62px;
-  right: -40px;
+  right: -192px;
+  display: flex;
+  align-items: center;
+  user-select: none;
   animation-duration: .5s;
   animation-fill-mode: forwards;
-  user-select: none;
 }
 
 #storage-notice {
@@ -89,7 +91,8 @@ body {
 
   to {
     opacity: 1;
-    transform: translate(-45px, 0px);
+    /* width + 4 */
+    transform: translate(-196px, 0px);
   }
 }
 
@@ -101,6 +104,6 @@ body {
 
   to {
     opacity: 0;
-    transform: translate(45px, 0px);
+    transform: translate(196px, 0px);
   }
 }

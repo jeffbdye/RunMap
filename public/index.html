@@ -1,46 +1,54 @@
 <html>
-  <head>
-    <title>Running Distance Map</title>
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <link href="styles.css" rel="stylesheet" type="text/css">
-    <link href="https://api.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet" type="text/css" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#00bd00">
-    <meta name="msapplication-TileColor" content="#2b5797">
-    <meta name="theme-color" content="#ffffff">
-    
-    <!-- Feel free to adblock this :) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135658845-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
 
-      gtag('config', 'UA-135658845-1');
-    </script>
-  </head>
+<head>
+  <title>Running Distance Map</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <link href="styles.css" rel="stylesheet" type="text/css">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
-  <div id="mapbox-container"></div>
-  <div id="run-menu" class="map-overlay">
-    <span id="run-length" title="Toggle mi/km"></span>
-    <span id="run-units"></span>
-    <!-- <span id="menu-icon" class="fas fa-caret-down"></span> -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#00bd00">
+  <meta name="msapplication-TileColor" content="#2b5797">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- Feel free to adblock this :) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135658845-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-135658845-1');
+  </script>
+</head>
+
+<div id="mapbox-container"></div>
+<div id="run-menu" class="map-overlay">
+  <span id="run-length" title="Toggle mi/km"></span>
+  <span id="run-units"></span>
+  <!-- arrow_drop_down -->
+</div>
+<div id="remove-last" class="map-overlay" title="Remove last marker">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <!-- undo -->
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path fill="white"
+      d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
+  </svg>
+  Remove last marker
+</div>
+<div id="storage-notice" class="map-overlay" style="display: none">
+  <div>
+    We use LocalStorage to improve this site's functionality. See <a target="_blank" href="storage.html">here</a> to
+    learn more.
   </div>
-  <div id="remove-last" class="map-overlay" title="Remove last point">
-    <i class="fas fa-backspace"></i>
-  </div>
-  <div id="storage-notice" class="map-overlay" style="display: none">
-    <div>
-      We use LocalStorage to improve this site's functionality. See <a target="_blank" href="storage.html">here</a> to learn more.
-    </div>
-    <button id="accept-storage">Got it!</button>
-  </div>
-  <script src="vendor.js"></script>
-  <script src="app.js"></script>
+  <button id="accept-storage">Got it!</button>
+</div>
+<script src="vendor.js"></script>
+<script src="app.js"></script>
+
 </html>

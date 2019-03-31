@@ -16,6 +16,7 @@ Running map distance app
 - https://realfavicongenerator.net/ - favicons
 
 # Changelog
+- 3/30/19: Material icons, improved labels
 - 3/16/19: Refactored distance formatting
 - 3/14/19: Setup Jenkins ci/cd
 - 3/11/19: Configure km/mi for distance
