@@ -76,7 +76,7 @@ function addNewPoint(e: MapMouseEvent): void {
         e.lngLat,
         e.point
       );
-    start.marker = addMarker(e.lngLat, true);
+    start.setMarker(addMarker(e.lngLat, true));
     currentRun = new CurrentRun(start);
     removeLastElement.classList.remove('slide-out');
     removeLastElement.classList.add('slide-in');

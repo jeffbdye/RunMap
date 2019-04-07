@@ -107,3 +107,9 @@ body {
     transform: translate(196px, 0px);
   }
 }
+
+@media screen and (max-width: 800px) {
+  #last-label {
+    display: none;
+  }
+}
