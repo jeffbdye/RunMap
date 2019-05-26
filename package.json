@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "0.6.0",
+    "@turf/turf": "5.1.6",
     "mapbox-gl": "0.53.0",
     "uuid": "3.3.2"
   }

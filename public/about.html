@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>Running Distance Map Storage</title>
+  <title>Running Distance Map About</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
 <style>
@@ -25,8 +25,12 @@
     height: 32px;
   }
 
-  .overall-usage {
-    font-size: 1.5em;
+  .header {
+    font-size: 1.5em
+  }
+
+  .body-content {
+    font-size: 1.1em;
   }
 
   .storage-list span {
@@ -49,13 +53,24 @@
   }
 
   .center-container button:hover {
-    background-color: rgb(113, 167, 255);
+    opacity: 0.85;
   }
 </style>
 <div class="center-container">
   <img src="./favicon-32x32.png">
 </div>
-<div class="overall-usage">
+<div class="header">
+  About the site
+</div>
+<div class="body-content">
+  This application is intended to help you chart map out your run and determine the distance of your route.
+  See the source at <a href="https://github.com/jeffbdye/RunMap">GitHub</a>.
+  Consider helping out with hosting this site and my other apps <a href="https://www.paypal.me/jeffbdye" target="_blank">here</a>!
+</div>
+<div class="header">
+  Storage and cookie notices
+</div>
+<div class="body-content">
   We use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">LocalStorage</a> 
   to improve the functionality of this site. See below for a listing of what's stored
   and why.
@@ -65,14 +80,19 @@
   Used to re-center the map for future visits to the site.
 </div>
 <div class="storage-list">
-  - <span class="storage-key">runmap-use_metric</span>: Your preferences to display the run's distance in metric or miles.
+  - <span class="storage-key">runmap-use_metric</span>: Your preference to display the run's distance in metric or miles.
+</div>
+<div class="storage-list">
+  - <span class="storage-key">runmap-follow_roads</span>: Your preference to have the newly added segments follow roads or draw as a straight line.
 </div>
 <div class="storage-list">
   - <span class="storage-key">runmap-storage_notice</span>: Whether or not you've dismissed the storage notice.
 </div>
 
 <div class="center-container">
-  <button onclick="window.close()">Return</button>
+  <button onclick="window.close()"></button>
+    Return
+  </button>
 </div>
 
 </html>
