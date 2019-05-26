@@ -10,12 +10,14 @@ Running map distance app
 - Mile markers along line
 - Run distance at any point on line
 - Elevation along run
+- Animate line add/remove
 
 # Thanks
 - https://github.com/mikeomeara1 - mapbox-sdk types
 - https://realfavicongenerator.net/ - favicons
 
 # Changelog
+- 5/26/19: Added side menu, choose to follow roads or not
 - 3/30/19: Material icons, improved labels
 - 3/16/19: Refactored distance formatting
 - 3/14/19: Setup Jenkins ci/cd

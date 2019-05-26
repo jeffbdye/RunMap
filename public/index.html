@@ -27,29 +27,80 @@
 </head>
 
 <div id="mapbox-container"></div>
-<div id="run-menu" class="map-overlay">
+<div id="menu-container" class="map-overlay">
+  <button id="menu-toggle">
+    <!-- menu -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+      <path d="M0 0h24v24H0z" fill="none" />
+      <path fill="white" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+    </svg>
+  </button>
+</div>
+<div id="run-length-container" class="map-overlay">
   <span id="run-length" title="Toggle mi/km"></span>
   <span id="run-units"></span>
-  <!-- arrow_drop_down -->
 </div>
+
 <div id="remove-last" class="map-overlay" title="Remove last marker">
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
     <!-- undo -->
     <path d="M0 0h24v24H0z" fill="none" />
-    <path fill="white"
-      d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
+    <path fill="white" d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
   </svg>
   <span id="last-label">
     Remove last marker
   </span>
 </div>
+
 <div id="storage-notice" class="map-overlay" style="display: none">
   <div>
-    We use LocalStorage to improve this site's functionality. See <a target="_blank" href="storage.html">here</a> to
+    We use LocalStorage to improve this site's functionality. See <a target="_blank" href="about.html">here</a> to
     learn more.
   </div>
   <button id="accept-storage">Got it!</button>
 </div>
+
+<div id="settings">
+  <div id="settings-pane">
+    <div style="display: flex">
+      <span style="flex: 5; font-size: 20px; margin: 5px; border-bottom: 1px solid #c1c1c1;">
+        RunMap
+      </span>
+      <button id="close-settings" style="flex: 1; cursor: pointer; background: transparent; border: 0;">
+        <!-- arrow_left  -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+          <path fill="grey" d="M14 7l-5 5 5 5V7z" />
+          <path fill="none" d="M24 0v24H0V0h24z" />
+        </svg>
+      </button>
+    </div>
+    <ul style="list-style: none">
+      <li>
+        <button id="toggle-units">
+          Toggle km/mi
+        </button>
+      </li>
+      <li>
+        <button id="follow-roads">
+          Follow roads
+          <!-- strikethrough when off -->
+        </button>
+      </li>
+      <li>
+        <a href="about.html" target="_blank">About</a>
+      </li>
+      <!-- 
+        save/load run
+        clear current run
+        satellite, street map selector
+      -->
+
+    </ul>
+  </div>
+  <!-- <div id="settings-mask">
+  </div> -->
+</div>
+
 <script src="vendor.js"></script>
 <script src="app.js"></script>
 

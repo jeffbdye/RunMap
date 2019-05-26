@@ -1,5 +1,5 @@
 import { LngLat, Point, Marker } from 'mapbox-gl';
-import { MapiResponse, DirectionsResponse } from '../custom-typings/@mapbox_mapbox-sdk';
+import { Route } from '../custom-typings/@mapbox_mapbox-sdk';
 
 export class RunStart {
   public lngLat: LngLat;
@@ -22,32 +22,25 @@ export class RunStart {
 
 export class RunSegment extends RunStart {
   public id: string;
-  public apiResponse: MapiResponse;
-  public directionsResponse: DirectionsResponse;
-  public length: number; // length in meters
+  public route: Route;
+  public distance: number; // length in meters
 
-  constructor(id: string, lngLat: LngLat, point: Point) {
+  constructor(id: string, lngLat: LngLat, point: Point, route: Route) {
     super(lngLat, point);
     this.id = id;
-    this.length = 0;
-  }
-
-  public setResponse(apiResponse: MapiResponse): void {
-    this.apiResponse = apiResponse;
-    this.directionsResponse = apiResponse.body as DirectionsResponse;
-    this.length = this.directionsResponse.routes[0].distance;
+    this.distance = route.distance;
   }
 }
 
 export class CurrentRun {
   public start: RunStart;
   public segments: RunSegment[];
-  public length: number; // sum of distances in meters
+  public distance: number; // sum of distances in meters
 
   constructor(start: RunStart) {
     this.start = start;
     this.segments = [];
-    this.length = 0;
+    this.distance = 0;
   }
 
   public getLastPosition(): LngLat {
@@ -58,25 +51,21 @@ export class CurrentRun {
     }
   }
 
-  public addSegment(newSegment: RunSegment): void {
-    this.segments.push(newSegment);
-  }
-
-  public segmentDistanceUpdated(segment: RunSegment, apiResponse: MapiResponse, newMarker: Marker): void {
-    if (segment.length > 0) {
-      this.length -= segment.length;
-    }
-    segment.setResponse(apiResponse);
-    segment.setMarker(newMarker);
-    this.length += segment.length;
+  public addSegment(segment: RunSegment, marker: Marker): void {
+    this.segments.push(segment);
+    segment.setMarker(marker);
+    this.distance += segment.distance;
   }
 
   // last segment of the run or undefined if no segments
-  public removeLastPoint(): RunSegment {
+  public removeLastSegment(): RunSegment {
     let toRemove: RunSegment = undefined;
     if (this.segments.length > 0) {
       toRemove = this.segments.pop();
-      this.length -= toRemove.directionsResponse.routes[0].distance;
+      this.distance -= toRemove.distance;
+      if (this.distance < 0) { // thanks javascript
+        this.distance = 0;
+      }
       toRemove.marker.remove();
     }
     return toRemove;
