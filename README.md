@@ -11,6 +11,9 @@ Running map distance app
 - Run distance at any point on line
 - Elevation along run
 - Animate line add/remove
+- Save/load run
+- Clear current run
+- Map style - satellite, roads
 
 # Thanks
 - https://github.com/mikeomeara1 - mapbox-sdk types
