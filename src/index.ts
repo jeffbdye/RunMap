@@ -6,7 +6,7 @@ import { CurrentRun, RunStart, RunSegment } from './current-run';
 import { getFormattedDistance } from './distance-formatter';
 import { MapFocus } from './map-focus';
 import { ps } from './appsettings.secrets';
-import { MapiResponse, Directions, DirectionsService, DirectionsResponse, Route } from '../custom-typings/@mapbox_mapbox-sdk';
+import { MapiResponse, Directions, DirectionsService, DirectionsResponse, Route } from '../custom-typings/mapbox__mapbox-sdk';
 import { length, lineString } from '@turf/turf';
 const directionsFactory: Directions = require('@mapbox/mapbox-sdk/services/directions'); // TODO: determine proper typings to allow `import` to work
 

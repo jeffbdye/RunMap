@@ -1,5 +1,5 @@
 import { LngLat, Point, Marker } from 'mapbox-gl';
-import { Route } from '../custom-typings/@mapbox_mapbox-sdk';
+import { Route } from '../custom-typings/mapbox__mapbox-sdk';
 
 export class RunStart {
   public lngLat: LngLat;
