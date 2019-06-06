@@ -101,9 +101,39 @@ body {
   box-shadow: 2px 16px 12px 6px rgba(0, 0, 0, 0.2);
 }
 
-#settings-pane li {
+#settings-title {
+  display: flex;
+}
+
+#settings-title span {
+  flex: 5;
+  font-size: 20px;
+  margin: 5px;
+  border-bottom: 1px solid #c1c1c1;
+}
+
+#close-settings {
+  flex: 1;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+}
+
+#settings-list {
+  list-style: none;
+}
+
+#settings-list li {
   line-height: 24px;
   margin: 4px;
+}
+
+#settings-list li button {
+  font-size: 16px;
+}
+
+#settings-list li a {
+  margin-left: 7px;
 }
 
 #settings-pane button {
@@ -143,7 +173,8 @@ body {
 
   to {
     opacity: 1;
-    transform: translateX(202px); /* left + 10 */
+    transform: translateX(202px);
+    /* left + 10 */
   }
 }
 
