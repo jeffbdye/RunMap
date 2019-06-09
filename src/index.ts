@@ -37,6 +37,7 @@ let settingsElement = document.getElementById('settings-pane');
 let closeElement = document.getElementById('close-settings');
 let toggleUnitsElement = document.getElementById('toggle-units');
 let followRoadsElement = document.getElementById('follow-roads');
+let clearRunElement = document.getElementById('clear-run');
 
 let removeLastElement = document.getElementById('remove-last');
 
@@ -230,6 +231,11 @@ function setupUserControls(): void {
     closeMenu();
   };
 
+  clearRunElement.onclick = () => {
+    clearRun();
+    closeMenu();
+  };
+
   removeLastElement.onclick = removeLastSegment;
 
   lengthElement.onclick = toggleDistanceUnits;
@@ -262,6 +268,12 @@ function removeLastSegment(): void {
     currentRun = undefined;
     removeLastElement.classList.remove('slide-in');
     removeLastElement.classList.add('slide-out');
+  }
+}
+
+function clearRun(): void {
+  while (currentRun) {
+    removeLastSegment();
   }
 }
 

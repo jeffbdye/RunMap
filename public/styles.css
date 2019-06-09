@@ -107,16 +107,13 @@ body {
 
 #settings-title span {
   flex: 5;
-  font-size: 20px;
+  font-size: 26px;
   margin: 5px;
   border-bottom: 1px solid #c1c1c1;
 }
 
 #close-settings {
   flex: 1;
-  cursor: pointer;
-  background: transparent;
-  border: 0;
 }
 
 #settings-list {

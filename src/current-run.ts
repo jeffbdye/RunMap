@@ -23,7 +23,7 @@ export class RunStart {
 export class RunSegment extends RunStart {
   public id: string;
   public route: Route;
-  public distance: number; // length in meters
+  public distance: number; // in meters
 
   constructor(id: string, lngLat: LngLat, point: Point, route: Route) {
     super(lngLat, point);
