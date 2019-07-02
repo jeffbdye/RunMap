@@ -3,6 +3,7 @@
 <head>
   <title>Running Distance Map About</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
 </head>
 <style>
   * {
@@ -11,8 +12,8 @@
 
   body {
     font-family: 'Roboto', sans-serif;
-    margin-left: 20px;
-    margin-right: 20px;
+    width: 80%;
+    margin: 0 auto;
   }
 
   a {
@@ -55,6 +56,12 @@
   .center-container button:hover {
     opacity: 0.85;
   }
+
+  @media screen and (max-width: 800px) {
+    .body-content {
+      font-size: 1em;
+    }
+  }
 </style>
 <div class="center-container">
   <img src="./favicon-32x32.png">
@@ -68,29 +75,37 @@
   Consider helping out with hosting this site and my other apps <a href="https://www.paypal.me/jeffbdye" target="_blank">here</a>!
 </div>
 <div class="header">
-  Storage and cookie notices
+  Storage notices
 </div>
 <div class="body-content">
   We use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">LocalStorage</a> 
   to improve the functionality of this site. See below for a listing of what's stored
   and why.
 </div>
-<div class="storage-list">
-  - <span class="storage-key">runmap-last_focus</span>: The center of the map when you last interacted with it.
-  Used to re-center the map for future visits to the site.
-</div>
-<div class="storage-list">
-  - <span class="storage-key">runmap-use_metric</span>: Your preference to display the run's distance in metric or miles.
-</div>
-<div class="storage-list">
-  - <span class="storage-key">runmap-follow_roads</span>: Your preference to have the newly added segments follow roads or draw as a straight line.
-</div>
-<div class="storage-list">
-  - <span class="storage-key">runmap-storage_notice</span>: Whether or not you've dismissed the storage notice.
-</div>
+<ul class="storage-list">
+  <li>
+    <span>runmap-last_focus</span>: The center of the map when you last interacted with it.
+    Used to re-center the map for future visits to the site.
+  </li>
+  <li>
+    <span>runmap-use_metric</span>: Your preference to display the run's distance in metric or miles.
+  </li>
+  <li>
+    <span>runmap-follow_roads</span>: Your preference to have the newly added segments follow roads or draw as a straight line.
+  </li>
+  <li>
+    <span>runmap-storage_notice</span>: Whether or not you've dismissed the storage notice.
+  </li>
+</ul>
 
 <div class="center-container">
-  <button onclick="window.close()">
+  <button onclick="
+    window.close();
+    // redirect if window was opened directly
+    setTimeout(
+      () => window.location = 'https:\/\/runmap.run', 
+      2500);
+    ">
     Return
   </button>
 </div>
