@@ -26,6 +26,41 @@
   </script>
 </head>
 
+<div id="settings-pane">
+  <div id="settings-title">
+    <span>
+      RunMap
+    </span>
+    <button id="close-settings">
+      <!-- arrow_left  -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+        <path fill="grey" d="M14 7l-5 5 5 5V7z" />
+        <path fill="none" d="M24 0v24H0V0h24z" />
+      </svg>
+    </button>
+  </div>
+  <ul id="settings-list">
+    <li>
+      <button id="toggle-units">
+        Toggle km/mi
+      </button>
+    </li>
+    <li>
+      <button id="follow-roads">
+        Follow roads
+      </button>
+    </li>
+    <li>
+      <button id="clear-run">
+        Clear run
+      </button>
+    </li>
+    <li>
+      <a href="about.html" target="_blank">About</a>
+    </li>
+  </ul>
+</div>
+
 <div id="mapbox-container"></div>
 <div id="menu-container" class="map-overlay">
   <button id="menu-toggle">
@@ -58,43 +93,6 @@
     learn more.
   </div>
   <button id="accept-storage">Got it!</button>
-</div>
-
-<div id="settings">
-  <div id="settings-pane">
-    <div id="settings-title">
-      <span>
-        RunMap
-      </span>
-      <button id="close-settings">
-        <!-- arrow_left  -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-          <path fill="grey" d="M14 7l-5 5 5 5V7z" />
-          <path fill="none" d="M24 0v24H0V0h24z" />
-        </svg>
-      </button>
-    </div>
-    <ul id="settings-list">
-      <li>
-        <button id="toggle-units">
-          Toggle km/mi
-        </button>
-      </li>
-      <li>
-        <button id="follow-roads">
-          Follow roads
-        </button>
-      </li>
-      <li>
-        <button id="clear-run">
-          Clear run
-        </button>
-      </li>
-      <li>
-        <a href="about.html" target="_blank">About</a>
-      </li>
-    </ul>
-  </div>
 </div>
 
 <script src="vendor.js"></script>
