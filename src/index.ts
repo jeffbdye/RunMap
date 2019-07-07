@@ -35,6 +35,7 @@ let menuElement = document.getElementById('menu-toggle');
 
 let settingsElement = document.getElementById('settings-pane');
 let closeElement = document.getElementById('close-settings');
+let scrimElement = document.getElementById('settings-scrim');
 let toggleUnitsElement = document.getElementById('toggle-units');
 let followRoadsElement = document.getElementById('follow-roads');
 let clearRunElement = document.getElementById('clear-run');
@@ -47,7 +48,6 @@ let acceptStorageElement = document.getElementById('accept-storage');
 let isWaiting = false;
 let useMetric = loadBooleanPreference(USE_METRIC_KEY);
 let followRoads = loadBooleanPreference(FOLLOW_ROADS_KEY);
-let menuOpen = false;
 setupUserControls();
 
 map.on('load', () => {
@@ -70,22 +70,18 @@ map.on('load', () => {
 
 // click or tap
 map.on('click', (e: MapMouseEvent) => {
-  if (menuOpen) {
-    closeMenu();
-  } else {
-    if (!isWaiting) {
-      setWaiting(true);
-      addNewPoint(e);
-    }
-    const center = map.getCenter();
-    const pos = {
-      coords: {
-        latitude: center.lat,
-        longitude: center.lng
-      }
-    } as Position;
-    stashCurrentFocus(pos);
+  if (!isWaiting) {
+    setWaiting(true);
+    addNewPoint(e);
   }
+  const center = map.getCenter();
+  const pos = {
+    coords: {
+      latitude: center.lat,
+      longitude: center.lng
+    }
+  } as Position;
+  stashCurrentFocus(pos);
 });
 
 function addNewPoint(e: MapMouseEvent): void {
@@ -219,6 +215,7 @@ function setupUserControls(): void {
 
   menuElement.onclick = openMenu;
   closeElement.onclick = closeMenu;
+  scrimElement.onclick = closeMenu;
   toggleUnitsElement.onclick = () => {
     toggleDistanceUnits();
     closeMenu();
@@ -327,12 +324,14 @@ function setWaiting(toWait: boolean): void {
 
 function openMenu() {
   settingsElement.classList.add('settings-open');
-  menuOpen = true;
+  scrimElement.classList.remove('scrim-hidden');
+  scrimElement.classList.add('scrim-shown');
 }
 
 function closeMenu() {
   settingsElement.classList.remove('settings-open');
-  menuOpen = false;
+  scrimElement.classList.remove('scrim-shown');
+  scrimElement.classList.add('scrim-hidden');
 }
 
 function setFollowRoads(value: boolean) {

@@ -3,7 +3,7 @@
 }
 
 body {
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 #mapbox-container {
@@ -84,7 +84,7 @@ body {
 }
 
 #settings-pane {
-  z-index: 1;
+  z-index: 4;
   position: absolute;
   left: -340px;
   width: 320px;
@@ -140,6 +140,29 @@ body {
   opacity: .7;
 }
 
+#settings-scrim {
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  background-color: black;
+  animation-duration: .3s;
+  animation-fill-mode: forwards;
+}
+
+.scrim-shown {
+  animation-name: scrim-shown;
+}
+
+.scrim-hidden {
+  animation-name: scrim-hidden;
+}
+
 .slide-in {
   animation-name: slide-in;
 }
@@ -167,6 +190,33 @@ body {
 
   to {
     opacity: 0;
+  }
+}
+
+@keyframes scrim-shown {
+  from {
+    z-index: 3;
+    opacity: 0;
+  }
+
+  to {
+    z-index: 3;
+    opacity: .6;
+  }
+}
+
+@keyframes scrim-hidden {
+  0% {
+    z-index: 3;
+    opacity: .6;
+  }
+
+  99% {
+    opacity: 0;
+  }
+
+  100% {
+    z-index: -1;
   }
 }
 
