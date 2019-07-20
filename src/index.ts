@@ -17,7 +17,7 @@ const FOLLOW_ROADS_KEY = 'runmap-follow_roads';
 const mbk = atob(ps);
 
 const initialFocus = loadLastOrDefaultFocus();
-(mapboxgl as any)['a' + 'cce' + 'ssTo' + 'ken'] = mbk;
+(mapboxgl as any)[atob('YWNjZXNzVG9rZW4=')] = mbk;
 let map = new Map({
   pitchWithRotate: false,
   center: [initialFocus.lng, initialFocus.lat],
