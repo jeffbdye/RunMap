@@ -1,4 +1,4 @@
-import * as mapboxgl from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 import { Map, Marker, MapMouseEvent, NavigationControl, GeolocateControl, LngLat, Layer } from 'mapbox-gl';
 import { v4 as uuid } from 'uuid';
 import { LineString } from 'geojson';
