@@ -4,7 +4,6 @@ Running map distance app
 - The arrow button under the distance will remove the last point placed.
 
 # TODO
-- Proper types to import @mapbox/mapbox-sdk
 - Simple instructions in-app
 - Credits & attribution
 - Mile markers along line
@@ -20,6 +19,7 @@ Running map distance app
 - https://realfavicongenerator.net/ - favicons
 
 # Changelog
+- 7/24/19: Closer to proper types for mapbox-sdk, more obfuscation, updated packages
 - 5/26/19: Added side menu, choose to follow roads or not
 - 3/30/19: Material icons, improved labels
 - 3/16/19: Refactored distance formatting
