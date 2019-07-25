@@ -6,9 +6,10 @@ import { CurrentRun, RunStart, RunSegment } from './current-run';
 import { getFormattedDistance } from './distance-formatter';
 import { MapFocus } from './map-focus';
 import { ps } from './appsettings.secrets';
-import { MapiResponse, Directions, DirectionsService, DirectionsResponse, Route } from '../custom-typings/mapbox__mapbox-sdk';
+import { SdkConfig } from '@mapbox/mapbox-sdk/lib/classes/mapi-client';
 import { length, lineString } from '@turf/turf';
-const directionsFactory: Directions = require('@mapbox/mapbox-sdk/services/directions'); // TODO: determine proper typings to allow `import` to work
+import { MapiResponse } from '@mapbox/mapbox-sdk/lib/classes/mapi-response';
+import DirectionsFactory, { DirectionsService, DirectionsResponse, Route } from '@mapbox/mapbox-sdk/services/directions';
 
 const LAST_FOCUS_KEY = 'runmap-last_focus';
 const STORAGE_NOTICE_KEY = 'runmap-storage_notice';
@@ -26,7 +27,9 @@ let map = new Map({
   style: 'mapbox://styles/mapbox/streets-v11'
 });
 
-let directionsService: DirectionsService = directionsFactory({ accessToken: mbk });
+let cfg = {} as SdkConfig;
+((cfg as any)[atob('YWNjZXNzVG9rZW4=')] = mbk);
+let directionsService: DirectionsService = DirectionsFactory(cfg);
 let currentRun: CurrentRun = undefined;
 
 let lengthElement = document.getElementById('run-length');

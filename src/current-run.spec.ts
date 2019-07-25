@@ -1,6 +1,6 @@
 import { CurrentRun, RunStart, RunSegment } from './current-run';
 import { LngLat, Point, Marker } from 'mapbox-gl';
-import { Route } from '../custom-typings/mapbox__mapbox-sdk';
+import { Route } from '@mapbox/mapbox-sdk/services/directions';
 
 describe('CurrentRun class', () => {
   it('should initialize with a run start', () => {
