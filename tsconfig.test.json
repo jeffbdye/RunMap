@@ -5,6 +5,7 @@
   },
   "extends": "./tsconfig.json",
   "include": [
-    "./src/*.spec.ts"
+    "./src/*.spec.ts",
+    "./custom-typings/mapbox__mapbox-sdk/*.d.ts"
   ],
 }
