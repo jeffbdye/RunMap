@@ -1,15 +1,14 @@
-import mapboxgl from 'mapbox-gl';
-import { Map, Marker, MapMouseEvent, NavigationControl, GeolocateControl, LngLat, Layer } from 'mapbox-gl';
+import mapboxgl, { Map, Marker, MapMouseEvent, NavigationControl, GeolocateControl, LngLat, Layer } from 'mapbox-gl';
 import { v4 as uuid } from 'uuid';
 import { LineString } from 'geojson';
+import { length, lineString } from '@turf/turf';
+import { SdkConfig } from '@mapbox/mapbox-sdk/lib/classes/mapi-client';
+import { MapiResponse } from '@mapbox/mapbox-sdk/lib/classes/mapi-response';
+import DirectionsFactory, { DirectionsService, DirectionsResponse, Route } from '@mapbox/mapbox-sdk/services/directions';
 import { CurrentRun, RunStart, RunSegment } from './current-run';
 import { getFormattedDistance } from './distance-formatter';
 import { MapFocus } from './map-focus';
 import { ps } from './appsettings.secrets';
-import { SdkConfig } from '@mapbox/mapbox-sdk/lib/classes/mapi-client';
-import { length, lineString } from '@turf/turf';
-import { MapiResponse } from '@mapbox/mapbox-sdk/lib/classes/mapi-response';
-import DirectionsFactory, { DirectionsService, DirectionsResponse, Route } from '@mapbox/mapbox-sdk/services/directions';
 
 const LAST_FOCUS_KEY = 'runmap-last_focus';
 const STORAGE_NOTICE_KEY = 'runmap-storage_notice';
