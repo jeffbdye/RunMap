@@ -23,6 +23,7 @@
   "devDependencies": {
     "@types/jasmine": "3.3.14",
     "@types/mapbox-gl": "0.51.11",
+    "@types/mapbox__mapbox-sdk": "0.6.0",
     "@types/uuid": "3.4.5",
     "jasmine": "3.4.0",
     "ts-loader": "6.0.4",
