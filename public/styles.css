@@ -69,13 +69,13 @@ body {
   animation-fill-mode: forwards;
 }
 
-#storage-notice {
+#help-notice {
   bottom: 24px;
   margin: 0 auto;
   width: 200px;
 }
 
-#accept-storage {
+#dismiss-notice {
   margin-top: 8px;
   height: 32px;
   width: 96px;

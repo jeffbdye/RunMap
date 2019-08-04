@@ -4,21 +4,20 @@ Running map distance app
 - The arrow button under the distance will remove the last point placed.
 
 # TODO
+- Elevation along run
 - Simple instructions in-app
-- Credits & attribution
+- Map style - satellite, roads
 - Mile markers along line
 - Run distance at any point on line
-- Elevation along run
 - Animate line add/remove
 - Save/load run
-- Clear current run
-- Map style - satellite, roads
 
 # Thanks
 - https://github.com/mikeomeara1 - mapbox-sdk types
 - https://realfavicongenerator.net/ - favicons
 
 # Changelog
+- 8/4/19: Contributed types, now consuming them
 - 7/24/19: Closer to proper types for mapbox-sdk, more obfuscation, updated packages
 - 5/26/19: Added side menu, choose to follow roads or not
 - 3/30/19: Material icons, improved labels

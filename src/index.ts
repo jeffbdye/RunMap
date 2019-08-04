@@ -11,7 +11,7 @@ import { MapFocus } from './map-focus';
 import { ps } from './appsettings.secrets';
 
 const LAST_FOCUS_KEY = 'runmap-last_focus';
-const STORAGE_NOTICE_KEY = 'runmap-storage_notice';
+const STORAGE_NOTICE_KEY = 'runmap-help_notice';
 const USE_METRIC_KEY = 'runmap-use_metric';
 const FOLLOW_ROADS_KEY = 'runmap-follow_roads';
 const mbk = atob(ps);
@@ -44,8 +44,8 @@ let clearRunElement = document.getElementById('clear-run');
 
 let removeLastElement = document.getElementById('remove-last');
 
-let storageElement = document.getElementById('storage-notice');
-let acceptStorageElement = document.getElementById('accept-storage');
+let storageElement = document.getElementById('help-notice');
+let acceptStorageElement = document.getElementById('dismiss-notice');
 
 let isWaiting = false;
 let useMetric = loadBooleanPreference(USE_METRIC_KEY);

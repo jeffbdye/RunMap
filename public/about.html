@@ -3,7 +3,7 @@
 <head>
   <title>Running Distance Map About</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
 </head>
 <style>
   * {
@@ -20,14 +20,10 @@
     color: #60a0ff;
   }
 
-  img {
+  img#run-icon {
     margin: 0 auto;
     width: 32px;
     height: 32px;
-  }
-
-  .header {
-    font-size: 1.5em
   }
 
   .body-content {
@@ -64,21 +60,22 @@
   }
 </style>
 <div class="center-container">
-  <img src="./favicon-32x32.png">
+  <img id="run-icon" src="./favicon-32x32.png">
 </div>
-<div class="header">
+<h2>
   About the site
-</div>
+</h2>
 <div class="body-content">
   This application is intended to help you chart map out your run and determine the distance of your route.
   See the source at <a href="https://github.com/jeffbdye/RunMap">GitHub</a>.
-  Consider helping out with hosting this site and my other apps <a href="https://www.paypal.me/jeffbdye" target="_blank">here</a>!
+  Consider helping out with hosting this site and my other apps <a href="https://www.paypal.me/jeffbdye"
+    target="_blank">here</a>!
 </div>
-<div class="header">
+<h2>
   Storage notices
-</div>
+</h2>
 <div class="body-content">
-  We use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">LocalStorage</a> 
+  We use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">LocalStorage</a>
   to improve the functionality of this site. See below for a listing of what's stored
   and why.
 </div>
@@ -91,12 +88,29 @@
     <span>runmap-use_metric</span>: Your preference to display the run's distance in metric or miles.
   </li>
   <li>
-    <span>runmap-follow_roads</span>: Your preference to have the newly added segments follow roads or draw as a straight line.
+    <span>runmap-follow_roads</span>: Your preference to have the newly added segments follow roads or draw as a
+    straight line.
   </li>
   <li>
     <span>runmap-storage_notice</span>: Whether or not you've dismissed the storage notice.
   </li>
 </ul>
+
+<h2>
+  Thanks and attribution
+</h2>
+<ul>
+  <li>
+    <a href="https://www.mapbox.com/about/maps/">https://www.mapbox.com/about/maps</a> - mapbox, mapbox-gl, mapbox-sdk-js
+  </li>
+  <li>
+    <a href="https://github.com/mikeomeara1">https://github.com/mikeomeara1</a> - mapbox-sdk types
+  </li>
+  <li>
+    <a href="https://realfavicongenerator.net/">https://realfavicongenerator.net</a> - favicons
+  </li>
+</ul>
+
 
 <div class="center-container">
   <button onclick="
