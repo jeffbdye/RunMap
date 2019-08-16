@@ -114,16 +114,20 @@ body {
   flex: 1;
 }
 
-#settings-list {
+#style-list {
+  border-bottom: 1px solid #c1c1c1;
+}
+
+#settings-pane ul {
   list-style: none;
 }
 
-#settings-list li {
+#settings-pane li {
   line-height: 24px;
   margin: 4px;
 }
 
-#settings-list li a {
+#settings-pane li a {
   margin-left: 8px;
 }
 

@@ -6,7 +6,6 @@ Running map distance app
 # TODO
 - Elevation along run
 - Simple instructions in-app
-- Map style - satellite, roads
 - Mile markers along line
 - Run distance at any point on line
 - Animate line add/remove
@@ -17,6 +16,7 @@ Running map distance app
 - https://realfavicongenerator.net/ - favicons
 
 # Changelog
+- 8/13/19: Allowed selecting map visual style
 - 8/4/19: Contributed types, now consuming them
 - 7/24/19: Closer to proper types for mapbox-sdk, more obfuscation, updated packages
 - 5/26/19: Added side menu, choose to follow roads or not

@@ -8,22 +8,29 @@ import DirectionsFactory, { DirectionsService, DirectionsResponse, Route } from 
 import { CurrentRun, RunStart, RunSegment } from './current-run';
 import { getFormattedDistance } from './distance-formatter';
 import { MapFocus } from './map-focus';
+import { getStyleById } from './map-style';
 import { ps } from './appsettings.secrets';
 
 const LAST_FOCUS_KEY = 'runmap-last_focus';
 const STORAGE_NOTICE_KEY = 'runmap-help_notice';
 const USE_METRIC_KEY = 'runmap-use_metric';
 const FOLLOW_ROADS_KEY = 'runmap-follow_roads';
+const MAP_STYLE_KEY = 'runmap-map_style';
 const mbk = atob(ps);
 
 const initialFocus = loadLastOrDefaultFocus();
+
+let isWaiting = false;
+let useMetric = loadBooleanPreference(USE_METRIC_KEY);
+let followRoads = loadBooleanPreference(FOLLOW_ROADS_KEY);
+let mapStyle = getStyleById(loadStringPreference(MAP_STYLE_KEY, 'street-style'));
 (mapboxgl as any)[atob('YWNjZXNzVG9rZW4=')] = mbk;
 let map = new Map({
   pitchWithRotate: false,
   center: [initialFocus.lng, initialFocus.lat],
   zoom: initialFocus.zoom,
   container: 'mapbox-container',
-  style: 'mapbox://styles/mapbox/streets-v11'
+  style: mapStyle
 });
 
 let cfg = {} as SdkConfig;
@@ -41,15 +48,15 @@ let scrimElement = document.getElementById('settings-scrim');
 let toggleUnitsElement = document.getElementById('toggle-units');
 let followRoadsElement = document.getElementById('follow-roads');
 let clearRunElement = document.getElementById('clear-run');
+let streetStyleElement = document.getElementById('street-style');
+let satelliteStyleElement = document.getElementById('satellite-style');
+let darkStyleElement = document.getElementById('dark-style');
+const mapStyleElements = [streetStyleElement, satelliteStyleElement, darkStyleElement];
 
 let removeLastElement = document.getElementById('remove-last');
 
 let storageElement = document.getElementById('help-notice');
 let acceptStorageElement = document.getElementById('dismiss-notice');
-
-let isWaiting = false;
-let useMetric = loadBooleanPreference(USE_METRIC_KEY);
-let followRoads = loadBooleanPreference(FOLLOW_ROADS_KEY);
 setupUserControls();
 
 map.on('load', () => {
@@ -205,14 +212,21 @@ function loadBooleanPreference(settingKey: string): boolean {
   }
 }
 
+function loadStringPreference(settingKey: string, defaultValue: string): string {
+  const setting = localStorage.getItem(settingKey);
+  if (setting === null) {
+    return defaultValue;
+  } else {
+    return setting;
+  }
+}
+
 function saveBooleanPreference(settingKey: string, value: boolean): void {
   localStorage.setItem(settingKey, '' + value); // ugh
 }
 
 function setupUserControls(): void {
-  if (!JSON.parse(localStorage.getItem(STORAGE_NOTICE_KEY))) {
-    storageElement.style.display = 'block';
-  }
+  showHelpElementIfNecessary();
   acceptStorageElement.onclick = hideStorageElement;
 
   menuElement.onclick = openMenu;
@@ -235,10 +249,35 @@ function setupUserControls(): void {
     closeMenu();
   };
 
+  // set initial selected style
+  const id = loadStringPreference(MAP_STYLE_KEY, 'street-style');
+  setSelectedMapToggleStyles(document.getElementById(id));
+  streetStyleElement.onclick = () => {
+    setMapStyle(streetStyleElement.id);
+    setSelectedMapToggleStyles(streetStyleElement);
+    closeMenu();
+  };
+  satelliteStyleElement.onclick = () => {
+    setMapStyle(satelliteStyleElement.id);
+    setSelectedMapToggleStyles(satelliteStyleElement);
+    closeMenu();
+  };
+  darkStyleElement.onclick = () => {
+    setMapStyle(darkStyleElement.id);
+    setSelectedMapToggleStyles(darkStyleElement);
+    closeMenu();
+  };
+
   removeLastElement.onclick = removeLastSegment;
 
   lengthElement.onclick = toggleDistanceUnits;
   updateLengthElement();
+}
+
+function showHelpElementIfNecessary(): void {
+  if (!JSON.parse(localStorage.getItem(STORAGE_NOTICE_KEY))) {
+    storageElement.style.display = 'block';
+  }
 }
 
 function hideStorageElement(): void {
@@ -250,6 +289,13 @@ function toggleDistanceUnits(): void {
   useMetric = !useMetric;
   updateLengthElement();
   saveBooleanPreference(USE_METRIC_KEY, useMetric);
+}
+
+function setSelectedMapToggleStyles(selected: HTMLElement): void {
+  for (let element of mapStyleElements) {
+    element.style.color = 'inherit';
+  }
+  selected.style.color = '#4285F4';
 }
 
 function removeLastSegment(): void {
@@ -344,4 +390,10 @@ function setFollowRoads(value: boolean) {
   }
   followRoads = value;
   saveBooleanPreference(FOLLOW_ROADS_KEY, value);
+}
+
+function setMapStyle(elementId: string) {
+  const style = getStyleById(elementId);
+  map.setStyle(style);
+  localStorage.setItem(MAP_STYLE_KEY, elementId);
 }
