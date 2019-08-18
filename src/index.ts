@@ -16,14 +16,14 @@ const STORAGE_NOTICE_KEY = 'runmap-help_notice';
 const USE_METRIC_KEY = 'runmap-use_metric';
 const FOLLOW_ROADS_KEY = 'runmap-follow_roads';
 const MAP_STYLE_KEY = 'runmap-map_style';
-const mbk = atob(ps);
 
-const initialFocus = loadLastOrDefaultFocus();
-
-let isWaiting = false;
 let useMetric = loadBooleanPreference(USE_METRIC_KEY);
 let followRoads = loadBooleanPreference(FOLLOW_ROADS_KEY);
-let mapStyle = getStyleById(loadStringPreference(MAP_STYLE_KEY, 'street-style'));
+let isWaiting = false;
+
+const initialFocus = loadLastOrDefaultFocus();
+const mapStyle = getStyleById(loadStringPreference(MAP_STYLE_KEY, 'street-style'));
+const mbk = atob(ps);
 (mapboxgl as any)[atob('YWNjZXNzVG9rZW4=')] = mbk;
 let map = new Map({
   pitchWithRotate: false,
@@ -93,6 +93,14 @@ map.on('click', (e: MapMouseEvent) => {
   stashCurrentFocus(pos);
 });
 
+map.on('style.load', () => {
+  if (currentRun) {
+    for (let segment of currentRun.segments) {
+      map.addLayer(segment.layer);
+    }
+  }
+});
+
 function addNewPoint(e: MapMouseEvent): void {
   if (currentRun === undefined) {
     let start = new RunStart(
@@ -146,12 +154,13 @@ function segmentFromDirectionsResponse(previousPoint: LngLat, e: MapMouseEvent) 
 
       const line = directionsResponse.routes[0].geometry as LineString;
       const coordinates = line.coordinates;
-      map.addLayer(lineFromRoute(newSegment.id, coordinates));
+      const layer = lineLayerFromCoordinates(newSegment.id, coordinates);
+      map.addLayer(layer);
 
       // use ending coordinate from route for the marker
       const segmentEnd = coordinates[coordinates.length - 1];
       const marker = addMarker(new LngLat(segmentEnd[0], segmentEnd[1]), false);
-      currentRun.addSegment(newSegment, marker);
+      currentRun.addSegment(newSegment, marker, layer);
       updateLengthElement();
     } else {
       alert(`Non-successful status code when getting directions: ${JSON.stringify(res)}`);
@@ -162,22 +171,23 @@ function segmentFromDirectionsResponse(previousPoint: LngLat, e: MapMouseEvent) 
 }
 
 function segmentFromStraightLine(previousPoint: LngLat, e: MapMouseEvent): void {
-  const coordinates = [
+  const lineCoordinates = [
     [previousPoint.lng, previousPoint.lat],
     [e.lngLat.lng, e.lngLat.lat]
   ];
 
-  const distance = length(lineString(coordinates), { units: 'meters' });
-  const route = { distance: distance, geometry: { type: 'LineString', coordinates: coordinates } } as Route;
+  const distance = length(lineString(lineCoordinates), { units: 'meters' });
+  const route = { distance: distance, geometry: { type: 'LineString', coordinates: lineCoordinates } } as Route;
   let newSegment = new RunSegment(
     uuid(),
     e.lngLat,
     e.point,
     route
   );
-  map.addLayer(lineFromRoute(newSegment.id, coordinates));
+  const layer = lineLayerFromCoordinates(newSegment.id, lineCoordinates);
+  map.addLayer(layer);
   const marker = addMarker(e.lngLat, false);
-  currentRun.addSegment(newSegment, marker);
+  currentRun.addSegment(newSegment, marker, layer);
   updateLengthElement();
 }
 
@@ -229,49 +239,30 @@ function setupUserControls(): void {
   showHelpElementIfNecessary();
   acceptStorageElement.onclick = hideStorageElement;
 
+  removeLastElement.onclick = removeLastSegment;
+
+  updateLengthElement();
+  lengthElement.onclick = toggleDistanceUnits;
+
   menuElement.onclick = openMenu;
   closeElement.onclick = closeMenu;
   scrimElement.onclick = closeMenu;
-  toggleUnitsElement.onclick = () => {
-    toggleDistanceUnits();
-    closeMenu();
-  };
+  toggleUnitsElement.onclick = () => closeMenuAction(toggleDistanceUnits);
 
   setFollowRoads(followRoads);
-  followRoadsElement.onclick = () => {
-    followRoads = !followRoads;
-    setFollowRoads(followRoads);
-    closeMenu();
-  };
+  followRoadsElement.onclick = () => closeMenuAction(toggleFollowRoads);
+  clearRunElement.onclick = () => closeMenuAction(clearRun);
 
-  clearRunElement.onclick = () => {
-    clearRun();
-    closeMenu();
-  };
-
-  // set initial selected style
   const id = loadStringPreference(MAP_STYLE_KEY, 'street-style');
   setSelectedMapToggleStyles(document.getElementById(id));
-  streetStyleElement.onclick = () => {
-    setMapStyle(streetStyleElement.id);
-    setSelectedMapToggleStyles(streetStyleElement);
-    closeMenu();
-  };
-  satelliteStyleElement.onclick = () => {
-    setMapStyle(satelliteStyleElement.id);
-    setSelectedMapToggleStyles(satelliteStyleElement);
-    closeMenu();
-  };
-  darkStyleElement.onclick = () => {
-    setMapStyle(darkStyleElement.id);
-    setSelectedMapToggleStyles(darkStyleElement);
-    closeMenu();
-  };
+  streetStyleElement.onclick = () => closeMenuAction(() => setSelectedMapToggleStyles(streetStyleElement));
+  satelliteStyleElement.onclick = () => closeMenuAction(() => setSelectedMapToggleStyles(satelliteStyleElement));
+  darkStyleElement.onclick = () => closeMenuAction(() => setSelectedMapToggleStyles(darkStyleElement));
+}
 
-  removeLastElement.onclick = removeLastSegment;
-
-  lengthElement.onclick = toggleDistanceUnits;
-  updateLengthElement();
+function closeMenuAction(fn: () => void) {
+  fn();
+  closeMenu();
 }
 
 function showHelpElementIfNecessary(): void {
@@ -291,7 +282,16 @@ function toggleDistanceUnits(): void {
   saveBooleanPreference(USE_METRIC_KEY, useMetric);
 }
 
+function toggleFollowRoads(): void {
+  followRoads = !followRoads;
+  setFollowRoads(followRoads);
+}
+
 function setSelectedMapToggleStyles(selected: HTMLElement): void {
+  const elementId = selected.id;
+  const style = getStyleById(elementId);
+  map.setStyle(style); // layers readded on style.load
+  localStorage.setItem(MAP_STYLE_KEY, elementId);
   for (let element of mapStyleElements) {
     element.style.color = 'inherit';
   }
@@ -322,7 +322,7 @@ function clearRun(): void {
   }
 }
 
-function lineFromRoute(id: string, route: number[][]): Layer {
+function lineLayerFromCoordinates(id: string, route: number[][]): Layer {
   return {
     id: id,
     type: 'line',
@@ -390,10 +390,4 @@ function setFollowRoads(value: boolean) {
   }
   followRoads = value;
   saveBooleanPreference(FOLLOW_ROADS_KEY, value);
-}
-
-function setMapStyle(elementId: string) {
-  const style = getStyleById(elementId);
-  map.setStyle(style);
-  localStorage.setItem(MAP_STYLE_KEY, elementId);
 }
