@@ -1,5 +1,5 @@
 import { CurrentRun, RunStart, RunSegment } from './current-run';
-import { LngLat, Point, Marker } from 'mapbox-gl';
+import { LngLat, Point, Marker, Layer } from 'mapbox-gl';
 import { Route } from '@mapbox/mapbox-sdk/services/directions';
 
 describe('CurrentRun class', () => {
@@ -26,14 +26,14 @@ describe('CurrentRun class', () => {
     let initialExpectedDistance = 500;
     let firstSegment = new RunSegment('some-uuid', {} as LngLat, {} as Point, getMockRoute(initialExpectedDistance));
     let marker = getMockMarker();
-    currentRun.addSegment(firstSegment, marker);
+    currentRun.addSegment(firstSegment, marker, getMockLayer());
 
     expect(currentRun.distance).toBe(initialExpectedDistance, 'Distance was not set correctly from the distance response.');
     expect(firstSegment.marker).toBe(marker);
 
     let secondDistance = 1337;
     let secondSegment = new RunSegment('different-uuid', {} as LngLat, {} as Point, getMockRoute(secondDistance));
-    currentRun.addSegment(secondSegment, getMockMarker());
+    currentRun.addSegment(secondSegment, getMockMarker(), getMockLayer());
     expect(currentRun.distance).toBe(initialExpectedDistance + secondDistance, 'Distance did not correctly add the incoming distance response value.');
   });
 
@@ -55,7 +55,7 @@ describe('CurrentRun class', () => {
     let segment = new RunSegment('some-uuid', expectedLngLat, {} as Point, getMockRoute(expectedDistance));
     let marker = getMockMarker();
     spyOn(marker, 'remove').and.stub();
-    currentRun.addSegment(segment, marker);
+    currentRun.addSegment(segment, marker, getMockLayer());
     expect(currentRun.distance).toBe(expectedDistance, 'The run distance was not incremented by the segment length');
 
     let retrieved = currentRun.getLastPosition();
@@ -80,6 +80,10 @@ describe('CurrentRun class', () => {
     return {
       remove: () => { }
     } as Marker;
+  }
+
+  function getMockLayer(): Layer {
+    return {} as Layer;
   }
 
   function getMockRoute(distance: number = 5): Route {

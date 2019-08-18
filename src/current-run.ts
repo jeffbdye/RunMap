@@ -1,4 +1,4 @@
-import { LngLat, Point, Marker } from 'mapbox-gl';
+import { LngLat, Point, Marker, Layer } from 'mapbox-gl';
 import { Route } from '@mapbox/mapbox-sdk/services/directions';
 
 export class RunStart {
@@ -24,6 +24,7 @@ export class RunSegment extends RunStart {
   public id: string;
   public route: Route;
   public distance: number; // in meters
+  public layer: Layer;
 
   constructor(id: string, lngLat: LngLat, point: Point, route: Route) {
     super(lngLat, point);
@@ -51,9 +52,10 @@ export class CurrentRun {
     }
   }
 
-  public addSegment(segment: RunSegment, marker: Marker): void {
+  public addSegment(segment: RunSegment, marker: Marker, layer: Layer): void {
     this.segments.push(segment);
     segment.setMarker(marker);
+    segment.layer = layer;
     this.distance += segment.distance;
   }
 
