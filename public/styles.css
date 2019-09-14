@@ -101,13 +101,14 @@ body {
 
 #settings-title {
   display: flex;
+  align-items: center;
+  border-bottom: 1px solid #c1c1c1;
 }
 
 #settings-title span {
   flex: 5;
   font-size: 26px;
   margin: 5px;
-  border-bottom: 1px solid #c1c1c1;
 }
 
 #close-settings {
