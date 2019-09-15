@@ -96,7 +96,8 @@ map.on('click', (e: MapMouseEvent) => {
 map.on('style.load', () => {
   if (currentRun) {
     for (let segment of currentRun.segments) {
-      map.addLayer(segment.layer);
+      const layer = lineLayerFromCoordinates(segment.id, segment.lineString.coordinates);
+      map.addLayer(layer);
     }
   }
 });
@@ -152,7 +153,7 @@ function segmentFromDirectionsResponse(previousPoint: LngLat, e: MapMouseEvent) 
         route
       );
 
-      const line = directionsResponse.routes[0].geometry as LineString;
+      const line = route.geometry as LineString;
       const coordinates = line.coordinates;
       const layer = lineLayerFromCoordinates(newSegment.id, coordinates);
       map.addLayer(layer);
@@ -160,7 +161,7 @@ function segmentFromDirectionsResponse(previousPoint: LngLat, e: MapMouseEvent) 
       // use ending coordinate from route for the marker
       const segmentEnd = coordinates[coordinates.length - 1];
       const marker = addMarker(new LngLat(segmentEnd[0], segmentEnd[1]), false);
-      currentRun.addSegment(newSegment, marker, layer);
+      currentRun.addSegment(newSegment, marker);
       updateLengthElement();
     } else {
       alert(`Non-successful status code when getting directions: ${JSON.stringify(res)}`);
@@ -187,7 +188,7 @@ function segmentFromStraightLine(previousPoint: LngLat, e: MapMouseEvent): void 
   const layer = lineLayerFromCoordinates(newSegment.id, lineCoordinates);
   map.addLayer(layer);
   const marker = addMarker(e.lngLat, false);
-  currentRun.addSegment(newSegment, marker, layer);
+  currentRun.addSegment(newSegment, marker);
   updateLengthElement();
 }
 
