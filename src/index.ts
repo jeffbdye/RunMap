@@ -93,10 +93,11 @@ map.on('click', (e: MapMouseEvent) => {
   stashCurrentFocus(pos);
 });
 
+// triggered upon map style changed
 map.on('style.load', () => {
   if (currentRun) {
     for (let segment of currentRun.segments) {
-      const layer = lineLayerFromCoordinates(segment.id, segment.lineString.coordinates);
+      const layer = lineLayerFromCoordinates(segment.id, segment.geometry.coordinates);
       map.addLayer(layer);
     }
   }
@@ -150,7 +151,8 @@ function segmentFromDirectionsResponse(previousPoint: LngLat, e: MapMouseEvent) 
         uuid(),
         e.lngLat,
         e.point,
-        route
+        route.distance,
+        route.geometry as LineString
       );
 
       const line = route.geometry as LineString;
@@ -178,12 +180,13 @@ function segmentFromStraightLine(previousPoint: LngLat, e: MapMouseEvent): void 
   ];
 
   const distance = length(lineString(lineCoordinates), { units: 'meters' });
-  const route = { distance: distance, geometry: { type: 'LineString', coordinates: lineCoordinates } } as Route;
+  const line = { type: 'LineString', coordinates: lineCoordinates } as LineString;
   let newSegment = new RunSegment(
     uuid(),
     e.lngLat,
     e.point,
-    route
+    distance,
+    line
   );
   const layer = lineLayerFromCoordinates(newSegment.id, lineCoordinates);
   map.addLayer(layer);
