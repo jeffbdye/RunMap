@@ -3,9 +3,9 @@ import { RunSegment, CurrentRun } from './current-run';
 import { FeatureCollection, LineString } from 'geojson';
 
 /**
- * Responsible for display of the lines for the segments of the run.
- * Handles requests to add a new segment to the map and animating
- * along the line's length. Requests while drawing will complete the
+ * Responsible for display of the layers for the lines for the run's route.
+ * Handles requests to add a new segment to the map and animating along
+ * the length of the line. Requests while drawing will complete the
  * current animation, then kick off the next segment.
  */
 export class AnimationController {
