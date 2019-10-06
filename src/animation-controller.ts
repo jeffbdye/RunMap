@@ -2,6 +2,12 @@ import { Map, GeoJSONSource, Layer } from 'mapbox-gl';
 import { RunSegment, CurrentRun } from './current-run';
 import { FeatureCollection, LineString } from 'geojson';
 
+/**
+ * Responsible for display of the lines for the segments of the run.
+ * Handles requests to add a new segment to the map and animating
+ * along the line's length. Requests while drawing will complete the
+ * current animation, then kick off the next segment.
+ */
 export class AnimationController {
   private map: Map;
 
@@ -26,6 +32,11 @@ export class AnimationController {
     this.map = map;
   }
 
+  /**
+   * Called upon map style load in order to add all of the
+   * current run's segments back as visible layers.
+   * @param run The page's CurrentRun with segments to add to the map
+   */
   public readdRunToMap(run: CurrentRun) {
     if (run) {
       for (let segment of run.segments) {
@@ -35,6 +46,10 @@ export class AnimationController {
     }
   }
 
+  /**
+   * Queue up animating the addition of a new segment to the map.
+   * @param segment The RunSegment to add to the map
+   */
   public animateSegment(segment: RunSegment) {
     // finish current animation if necessary
     if (this.animationFrame) {
@@ -55,8 +70,10 @@ export class AnimationController {
     this.animationFrame = requestAnimationFrame(() => this.animationCallback());
   }
 
-  // unbelievably naive way to animate:
-  // add each coordinate from the segment to the layer at the mercy of `requestAnimationFrame`
+  /**
+   * Unbelievably naive way to animate:
+   * Add each coordinate from the segment to the layer at the mercy of `requestAnimationFrame`
+   */
   private animationCallback() {
     if (this.counter === this.currentSegment.geometry.coordinates.length) {
       this.animationFrame = undefined;
