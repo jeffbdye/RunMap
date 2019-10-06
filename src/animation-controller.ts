@@ -59,13 +59,13 @@ export class AnimationController {
         this.setLayerGeojson(this.currentSegment.id, currentCoordinates);
       }
     }
-    // - initialize
+    // initialize
     this.currentSegment = segment;
     this.activeGeo.features[0].geometry.coordinates = [this.currentSegment.geometry.coordinates[0]];
-    // - add new layer
+    // add new layer
     let layer = this.getLineLayer(segment.id);
     this.map.addLayer(layer);
-    // - kick off animation loop
+    // kick off animation loop
     this.counter = 0;
     this.animationFrame = requestAnimationFrame(() => this.animationCallback());
   }
