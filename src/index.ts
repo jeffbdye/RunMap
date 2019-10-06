@@ -10,6 +10,7 @@ import { getFormattedDistance } from './distance-formatter';
 import { MapFocus } from './map-focus';
 import { getStyleById } from './map-style';
 import { ps } from './appsettings.secrets';
+import { AnimationController } from './animation-controller';
 
 const LAST_FOCUS_KEY = 'runmap-last_focus';
 const STORAGE_NOTICE_KEY = 'runmap-help_notice';
@@ -37,6 +38,8 @@ let cfg = {} as SdkConfig;
 ((cfg as any)[atob('YWNjZXNzVG9rZW4=')] = mbk);
 let directionsService: DirectionsService = DirectionsFactory(cfg);
 let currentRun: CurrentRun = undefined;
+
+let animationController = new AnimationController(map);
 
 let lengthElement = document.getElementById('run-length');
 let unitsElement = document.getElementById('run-units');
@@ -93,12 +96,9 @@ map.on('click', (e: MapMouseEvent) => {
   stashCurrentFocus(pos);
 });
 
+// triggered upon map style changed
 map.on('style.load', () => {
-  if (currentRun) {
-    for (let segment of currentRun.segments) {
-      map.addLayer(segment.layer);
-    }
-  }
+    animationController.readdRunToMap(currentRun);
 });
 
 function addNewPoint(e: MapMouseEvent): void {
@@ -117,7 +117,6 @@ function addNewPoint(e: MapMouseEvent): void {
     if (followRoads) {
       segmentFromDirectionsResponse(prev, e);
     } else {
-      // get route by straight line
       segmentFromStraightLine(prev, e);
     }
   }
@@ -149,18 +148,18 @@ function segmentFromDirectionsResponse(previousPoint: LngLat, e: MapMouseEvent) 
         uuid(),
         e.lngLat,
         e.point,
-        route
+        route.distance,
+        route.geometry as LineString
       );
 
-      const line = directionsResponse.routes[0].geometry as LineString;
+      const line = route.geometry as LineString;
       const coordinates = line.coordinates;
-      const layer = lineLayerFromCoordinates(newSegment.id, coordinates);
-      map.addLayer(layer);
+      animationController.animateSegment(newSegment);
 
       // use ending coordinate from route for the marker
       const segmentEnd = coordinates[coordinates.length - 1];
       const marker = addMarker(new LngLat(segmentEnd[0], segmentEnd[1]), false);
-      currentRun.addSegment(newSegment, marker, layer);
+      currentRun.addSegment(newSegment, marker);
       updateLengthElement();
     } else {
       alert(`Non-successful status code when getting directions: ${JSON.stringify(res)}`);
@@ -177,17 +176,17 @@ function segmentFromStraightLine(previousPoint: LngLat, e: MapMouseEvent): void 
   ];
 
   const distance = length(lineString(lineCoordinates), { units: 'meters' });
-  const route = { distance: distance, geometry: { type: 'LineString', coordinates: lineCoordinates } } as Route;
+  const line = { type: 'LineString', coordinates: lineCoordinates } as LineString;
   let newSegment = new RunSegment(
     uuid(),
     e.lngLat,
     e.point,
-    route
+    distance,
+    line
   );
-  const layer = lineLayerFromCoordinates(newSegment.id, lineCoordinates);
-  map.addLayer(layer);
+  animationController.animateSegment(newSegment);
   const marker = addMarker(e.lngLat, false);
-  currentRun.addSegment(newSegment, marker, layer);
+  currentRun.addSegment(newSegment, marker);
   updateLengthElement();
 }
 
@@ -320,34 +319,6 @@ function clearRun(): void {
   while (currentRun) {
     removeLastSegment();
   }
-}
-
-function lineLayerFromCoordinates(id: string, route: number[][]): Layer {
-  return {
-    id: id,
-    type: 'line',
-    source: { // mapboxgl.GeoJSONSourceOptions
-      type: 'geojson',
-      data: { // GeoJSON.Feature<GeoJSON.Geometry>
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'LineString',
-          coordinates: route
-        }
-      }
-    },
-    layout: {
-      'line-join': 'round',
-      'line-cap': 'round',
-      visibility: 'visible'
-    },
-    paint: {
-      'line-color': '#3887be',
-      'line-width': 5,
-      'line-opacity': .75
-    }
-  };
 }
 
 function updateLengthElement(): void {

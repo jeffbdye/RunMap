@@ -1,5 +1,5 @@
-import { LngLat, Point, Marker, Layer } from 'mapbox-gl';
-import { Route } from '@mapbox/mapbox-sdk/services/directions';
+import { LngLat, Point, Marker } from 'mapbox-gl';
+import { LineString } from 'geojson';
 
 export class RunStart {
   public lngLat: LngLat;
@@ -22,14 +22,14 @@ export class RunStart {
 
 export class RunSegment extends RunStart {
   public id: string;
-  public route: Route;
   public distance: number; // in meters
-  public layer: Layer;
+  public geometry: LineString;
 
-  constructor(id: string, lngLat: LngLat, point: Point, route: Route) {
+  constructor(id: string, lngLat: LngLat, point: Point, distance: number, geometry: LineString) {
     super(lngLat, point);
     this.id = id;
-    this.distance = route.distance;
+    this.distance = distance;
+    this.geometry = geometry;
   }
 }
 
@@ -52,10 +52,9 @@ export class CurrentRun {
     }
   }
 
-  public addSegment(segment: RunSegment, marker: Marker, layer: Layer): void {
+  public addSegment(segment: RunSegment, marker: Marker): void {
     this.segments.push(segment);
     segment.setMarker(marker);
-    segment.layer = layer;
     this.distance += segment.distance;
   }
 
