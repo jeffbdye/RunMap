@@ -1,6 +1,6 @@
 import { CurrentRun, RunStart, RunSegment } from './current-run';
-import { LngLat, Point, Marker, Layer } from 'mapbox-gl';
-import { LineString } from '@turf/turf';
+import { LngLat, Point, Marker } from 'mapbox-gl';
+import { LineString } from 'geojson';
 
 describe('CurrentRun class', () => {
   it('should initialize with a run start', () => {
