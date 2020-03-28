@@ -1,9 +1,12 @@
 # RunMap
+
 Running map distance app
+
 - Click the map to add segments to chart out your run and see the distance.
 - The arrow button under the distance will remove the last point placed.
 
-# TODO
+## TODO
+
 - Elevation along run
 - Simple instructions in-app
 - Mile markers along line
@@ -11,11 +14,14 @@ Running map distance app
 - Animate line add/remove
 - Save/load run
 
-# Thanks
-- https://github.com/mikeomeara1 - mapbox-sdk types
-- https://realfavicongenerator.net/ - favicons
+## Thanks
 
-# Changelog
+- [github.com/mikeomeara1](https://github.com/mikeomeara1) - mapbox-sdk types
+- [realfavicongenerator.net](https://realfavicongenerator.net/) - favicons
+
+## Changelog
+
+- 3/28/20: Audits, enabled Github workflows, also added extra accessiblity/aria context
 - 8/13/19: Allowed selecting map visual style
 - 8/4/19: Contributed types, now consuming them
 - 7/24/19: Closer to proper types for mapbox-sdk, more obfuscation, updated packages

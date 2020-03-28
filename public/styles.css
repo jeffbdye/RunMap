@@ -23,11 +23,13 @@ body {
   padding: 8px;
   text-align: center;
   font-family: sans-serif;
+  user-select: none;
 }
 
 #menu-container {
   top: 12px;
   left: 12px;
+  height: 32px;
 }
 
 #menu-container button {

@@ -1,8 +1,11 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
   <title>Running Distance Map</title>
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="description" content="Map out your run's distance by dropping points along your expected route.">
+
   <link href="styles.css" rel="stylesheet" type="text/css">
   <link href="https://api.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -26,12 +29,12 @@
   </script>
 </head>
 
-<div id="settings-pane">
+<div id="settings-pane" aria-hidden="true">
   <div id="settings-title">
     <span>
       RunMap
     </span>
-    <button id="close-settings">
+    <button id="close-settings" aria-label="Close settings pane">
       <!-- arrow_left  -->
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
         <path fill="grey" d="M14 7l-5 5 5 5V7z" />
@@ -39,7 +42,7 @@
       </svg>
     </button>
   </div>
-  <ul id="style-list">
+  <ul id="style-list" aria-label="List of Mapbox styles to display the map in">
     <li>
       <button id="street-style" data-style="streets-v11">
         Streets
@@ -56,19 +59,19 @@
       </button>
     </li>
   </ul>
-  <ul id="settings-list">
+  <ul id="settings-list" aria-label="List of settings for Runmap">
     <li>
-      <button id="toggle-units">
+      <button id="toggle-units" aria-label="Display the current run's distance in kilometers or miles">
         Toggle km/mi
       </button>
     </li>
     <li>
-      <button id="follow-roads">
+      <button id="follow-roads" aria-label="When adding a new point to the run, should it follow roads or be a straight line">
         Follow roads
       </button>
     </li>
     <li>
-      <button id="clear-run">
+      <button id="clear-run" aria-label="Clear all points from the current run">
         Clear run
       </button>
     </li>
@@ -78,11 +81,11 @@
   </ul>
 </div>
 
-<div id="settings-scrim"></div>
+<div id="settings-scrim" aria-hidden="true"></div>
 
 <div id="mapbox-container"></div>
 <div id="menu-container" class="map-overlay">
-  <button id="menu-toggle">
+  <button id="menu-toggle" aria-label="Open settings pane">
     <!-- menu -->
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
       <path d="M0 0h24v24H0z" fill="none" />
@@ -95,7 +98,7 @@
   <span id="run-units"></span>
 </div>
 
-<div id="remove-last" class="map-overlay" title="Remove last marker">
+<div id="remove-last" class="map-overlay" title="Remove last point from the run">
   <!-- undo -->
   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="24" viewBox="0 0 24 24">
     <path d="M0 0h24v24H0z" fill="none" />
@@ -108,7 +111,7 @@
 
 <div id="help-notice" class="map-overlay" style="display: none">
   <div>
-    Click/tap anywhere on the map to add points in order to map out your run! See <a target="_blank" href="about.html">here</a> to
+    Click/tap anywhere on the map to add points in order to map out your run! See the <a target="_blank" href="about.html">about page</a> to
     learn more.
   </div>
   <button id="dismiss-notice">Got it!</button>
