@@ -21,7 +21,7 @@ Running map distance app
 
 ## Changelog
 
-- 3/28/20: Audits, enabled Github workflows
+- 3/28/20: Audits, enabled Github workflows, also added extra accessiblity/aria context
 - 8/13/19: Allowed selecting map visual style
 - 8/4/19: Contributed types, now consuming them
 - 7/24/19: Closer to proper types for mapbox-sdk, more obfuscation, updated packages

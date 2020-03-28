@@ -111,6 +111,7 @@ function addNewPoint(e: MapMouseEvent): void {
     currentRun = new CurrentRun(start);
     removeLastElement.classList.remove('slide-out');
     removeLastElement.classList.add('slide-in');
+    removeLastElement.setAttribute('aria-hidden', 'false');
     updateLengthElement();
   } else {
     let prev = currentRun.getLastPosition();
@@ -312,6 +313,7 @@ function removeLastSegment(): void {
     currentRun = undefined;
     removeLastElement.classList.remove('slide-in');
     removeLastElement.classList.add('slide-out');
+    removeLastElement.setAttribute('aria-hidden', 'true');
   }
 }
 
@@ -326,6 +328,7 @@ function updateLengthElement(): void {
   const fd = getFormattedDistance(distance, useMetric);
   lengthElement.innerText = fd.roundedDistance;
   unitsElement.innerText = fd.units;
+  toggleUnitsElement.setAttribute('aria-value', useMetric ? 'kilometers' : 'miles');
 }
 
 function addMarker(pos: LngLat, isStart: boolean): Marker {
@@ -343,12 +346,14 @@ function setWaiting(toWait: boolean): void {
 
 function openMenu() {
   settingsElement.classList.add('settings-open');
+  settingsElement.setAttribute('aria-hidden', 'false');
   scrimElement.classList.remove('scrim-hidden');
   scrimElement.classList.add('scrim-shown');
 }
 
 function closeMenu() {
   settingsElement.classList.remove('settings-open');
+  settingsElement.setAttribute('aria-hidden', 'true');
   scrimElement.classList.remove('scrim-shown');
   scrimElement.classList.add('scrim-hidden');
 }
@@ -356,8 +361,10 @@ function closeMenu() {
 function setFollowRoads(value: boolean) {
   if (value) {
     followRoadsElement.style.textDecoration = 'inherit';
+    followRoadsElement.setAttribute('aria-value', 'enabled');
   } else {
     followRoadsElement.style.textDecoration = 'line-through';
+    followRoadsElement.setAttribute('aria-value', 'disabled');
   }
   followRoads = value;
   saveBooleanPreference(FOLLOW_ROADS_KEY, value);
