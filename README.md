@@ -1,11 +1,11 @@
 # RunMap
 
-![Master build badge](https://github.com/jeffbdye/RunMap/workflows/master/badge.svg)
+![Master build badge](https://github.com/jeffbdye/RunMap/workflows/master/badge.svg) - [history](https://github.com/jeffbdye/RunMap/actions?query=workflow%3Amaster) - [definition](https://github.com/jeffbdye/RunMap/blob/master/.github/workflows/master.yml)
 
 Running map distance app
 
 - Click the map to add segments to chart out your run and see the distance.
-- The arrow button under the distance will remove the last point placed.
+- Remove  will remove the last point placed.
 
 ## TODO
 
