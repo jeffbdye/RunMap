@@ -1,6 +1,7 @@
 # RunMap
 
-![Master build badge](https://github.com/jeffbdye/RunMap/workflows/Master/badge.svg)
+![Master build badge](https://github.com/jeffbdye/RunMap/workflows/master/badge.svg)
+
 Running map distance app
 
 - Click the map to add segments to chart out your run and see the distance.
