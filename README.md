@@ -2,18 +2,25 @@
 
 ![Master build badge](https://github.com/jeffbdye/RunMap/workflows/master/badge.svg) - [history](https://github.com/jeffbdye/RunMap/actions?query=workflow%3Amaster) - [definition](https://github.com/jeffbdye/RunMap/blob/master/.github/workflows/master.yml)
 
-Running map distance app
+## Running map distance app
 
-- Click the map to add segments to chart out your run and see the distance.
-- Remove  will remove the last point placed.
+Designed for anyone looking to plot out a run/bike/walk and find out the distance of their route.
+Use it for planning a route, or getting a sense of your route after a workout.
+
+- Click the map to add segments to chart out your run and see the total distance. The shortest route between that and the preceeding point is used.
+- Remove the last marker to undo an incorrect point or a more specific route.
+
+## Dev setup
+
+- Get an access token from [mapbox](https://account.mapbox.com/).
+- Run `npm run init <your token from above>` to set it up as a secret.
+- Use `npm run serve` to start serving locally on port 9000.
 
 ## TODO
 
-- Elevation along run
-- Simple instructions in-app
-- Mile markers along line
-- Run distance at any point on line
-- Animate line add/remove
+- Elevation along route
+- Simple instructions in-app (better user guidance/education)
+- Mile markers along route
 - Save/load run
 
 ## Thanks
