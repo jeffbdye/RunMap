@@ -30,6 +30,7 @@ Use it for planning a route, or getting a sense of your route after a workout.
 
 ## Changelog
 
+- 6/14/20: Updates to the testing experience, take advantage of existing libraries to simplify things
 - 3/28/20: Audits, enabled Github workflows, also added extra accessiblity/aria context
 - 8/13/19: Allowed selecting map visual style
 - 8/4/19: Contributed types, now consuming them
