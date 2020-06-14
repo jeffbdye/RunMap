@@ -10,7 +10,6 @@ pipeline {
         stage('Test') {
            steps {
                echo 'Testing...'
-               sh 'npm run build:test'
                sh 'npm run test'
            }
         }
@@ -26,7 +25,7 @@ pipeline {
         stage('Bundle') {
             steps {
                 echo 'Bundling...'
-                sh 'npm run build:deploy'
+                sh 'npm run build'
             }
         }
         stage('Deploy') {
