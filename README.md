@@ -1,6 +1,6 @@
 # RunMap
 
-![Master build badge](https://github.com/jeffbdye/RunMap/workflows/master/badge.svg) - [history](https://github.com/jeffbdye/RunMap/actions?query=workflow%3Amaster) - [definition](https://github.com/jeffbdye/RunMap/blob/master/.github/workflows/master.yml)
+[![Master build badge](https://github.com/jeffbdye/RunMap/workflows/master/badge.svg)](https://github.com/jeffbdye/RunMap/actions?query=workflow%3Amaster) - [definition](https://github.com/jeffbdye/RunMap/blob/master/.github/workflows/master.yml)
 
 ## Running map distance app
 
