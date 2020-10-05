@@ -4,7 +4,7 @@ import { LineString } from 'geojson';
 import { length, lineString } from '@turf/turf';
 import { SdkConfig } from '@mapbox/mapbox-sdk/lib/classes/mapi-client';
 import { MapiResponse } from '@mapbox/mapbox-sdk/lib/classes/mapi-response';
-import DirectionsFactory, { DirectionsService, DirectionsResponse, Route } from '@mapbox/mapbox-sdk/services/directions';
+import DirectionsFactory, { DirectionsService, DirectionsResponse } from '@mapbox/mapbox-sdk/services/directions';
 import { CurrentRun, RunStart, RunSegment } from './current-run';
 import { getFormattedDistance } from './distance-formatter';
 import { MapFocus } from './map-focus';
