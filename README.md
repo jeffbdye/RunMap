@@ -2,6 +2,8 @@
 
 [![Master build badge](https://github.com/jeffbdye/RunMap/workflows/master/badge.svg)](https://github.com/jeffbdye/RunMap/actions?query=workflow%3Amaster) - [definition](https://github.com/jeffbdye/RunMap/blob/master/.github/workflows/master.yml)
 
+See it in action at runmap (.) run.
+
 ## Running map distance app
 
 Designed for anyone looking to plot out a run/bike/walk and find out the distance of their route.
