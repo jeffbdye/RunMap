@@ -1,6 +1,6 @@
 # RunMap
 
-[![Main build badge](https://github.com/jeffbdye/RunMap/workflows/main/badge.svg)](https://github.com/jeffbdye/RunMap/actions?query=workflow%3Amaster) - [definition](https://github.com/jeffbdye/RunMap/blob/main/.github/workflows/main.yml)
+[![Main build badge](https://github.com/jeffbdye/RunMap/workflows/main/badge.svg)](https://github.com/jeffbdye/RunMap/actions?query=workflow%3Amain) - [definition](https://github.com/jeffbdye/RunMap/blob/main/.github/workflows/main.yml)
 
 See it in action at runmap (.) run.
 
