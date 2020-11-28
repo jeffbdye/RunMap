@@ -22,9 +22,8 @@ export class MapboxClient {
    * Get the next segment for the run using a mapbox directions service request
    * @param previousLngLat The last LngLat in the run, the starting point for the next segment
    * @param nextLngLat The next LngLat in the run, the ending point for the next segment
-   * @param nextPoint  The next LngLat as an x,y pair
    */
-  public getSegmentFromDirectionsService(previousLngLat: LngLat, nextLngLat: LngLat, nextPoint: Point): Promise<RunSegment> {
+  public getSegmentFromDirectionsService(previousLngLat: LngLat, nextLngLat: LngLat): Promise<RunSegment> {
     return this.directionsService.getDirections({
       profile: 'walking',
       waypoints: [
@@ -47,7 +46,6 @@ export class MapboxClient {
         return new RunSegment(
           uuid(),
           nextLngLat,
-          nextPoint,
           route.distance,
           route.geometry as LineString
         );

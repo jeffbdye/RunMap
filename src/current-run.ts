@@ -3,12 +3,10 @@ import { LineString } from 'geojson';
 
 export class RunStart {
   public lngLat: LngLat;
-  public point: Point;
   public marker: Marker;
 
-  constructor(lngLat: LngLat, point: Point) {
+  constructor(lngLat: LngLat) {
     this.lngLat = lngLat;
-    this.point = point;
   }
 
   public setMarker(newMarker: Marker) {
@@ -25,8 +23,8 @@ export class RunSegment extends RunStart {
   public distance: number; // in meters
   public geometry: LineString;
 
-  constructor(id: string, lngLat: LngLat, point: Point, distance: number, geometry: LineString) {
-    super(lngLat, point);
+  constructor(id: string, lngLat: LngLat, distance: number, geometry: LineString) {
+    super(lngLat);
     this.id = id;
     this.distance = distance;
     this.geometry = geometry;

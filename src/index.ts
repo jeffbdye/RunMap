@@ -2,7 +2,6 @@ import mapboxgl, { Map, Marker, MapMouseEvent, NavigationControl, GeolocateContr
 import { v4 as uuid } from 'uuid';
 import { LineString } from 'geojson';
 import { length, lineString } from '@turf/turf';
-import { MapiResponse } from '@mapbox/mapbox-sdk/lib/classes/mapi-response';
 import { CurrentRun, RunStart, RunSegment } from './current-run';
 import { getFormattedDistance } from './distance-formatter';
 import { MapFocus } from './map-focus';
@@ -102,8 +101,7 @@ map.on('style.load', () => {
 function addNewPoint(e: MapMouseEvent): void {
   if (currentRun === undefined) {
     let start = new RunStart(
-      e.lngLat,
-      e.point
+      e.lngLat
     );
     start.setMarker(addMarker(e.lngLat, true));
     currentRun = new CurrentRun(start);
@@ -122,8 +120,8 @@ function addNewPoint(e: MapMouseEvent): void {
   setWaiting(false);
 }
 
-function segmentFromDirectionsResponse(previousPoint: LngLat, e: MapMouseEvent) {
-  mapboxClient.getSegmentFromDirectionsService(previousPoint, e.lngLat, e.point)
+function segmentFromDirectionsResponse(previouseLngLat: LngLat, e: MapMouseEvent) {
+  mapboxClient.getSegmentFromDirectionsService(previouseLngLat, e.lngLat)
     .then((newSegment: RunSegment) => {
 
       const line = newSegment.geometry as LineString;
@@ -151,7 +149,6 @@ function segmentFromStraightLine(previousPoint: LngLat, e: MapMouseEvent): void 
   let newSegment = new RunSegment(
     uuid(),
     e.lngLat,
-    e.point,
     distance,
     line
   );
