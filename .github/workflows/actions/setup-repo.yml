@@ -1,0 +1,13 @@
+name: 'Repo setup'
+description: 'Setup node, checkout, install'
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup node
+      uses: actions/setup-node@v1.4.4
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: npm i

@@ -1,0 +1,7 @@
+name: 'Run unit tests'
+description: 'Runs all unit tests'
+runs:
+  using: 'composite'
+  steps:
+    - name: Run unit tests
+      run: npm run test
