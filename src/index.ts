@@ -139,7 +139,7 @@ function addSegmentFromDirectionsResponse(previousLngLat: LngLat, e: MapMouseEve
 }
 
 function addSegmentFromStraightLine(previousLngLat: LngLat, e: MapMouseEvent): void {
-  let newSegment = nextSegmentService.segmentFromStraightLine(previousLngLat, e.lngLat);
+  const newSegment = nextSegmentService.segmentFromStraightLine(previousLngLat, e.lngLat);
 
   animationService.animateSegment(newSegment);
   const marker = addMarker(e.lngLat, false);
