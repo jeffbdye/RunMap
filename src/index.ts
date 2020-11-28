@@ -1,29 +1,21 @@
 import mapboxgl, { Map, Marker, MapMouseEvent, NavigationControl, GeolocateControl, LngLat } from 'mapbox-gl';
-import { v4 as uuid } from 'uuid';
 import { LineString } from 'geojson';
-import { length, lineString } from '@turf/turf';
-import { SdkConfig } from '@mapbox/mapbox-sdk/lib/classes/mapi-client';
-import { MapiResponse } from '@mapbox/mapbox-sdk/lib/classes/mapi-response';
-import DirectionsFactory, { DirectionsService, DirectionsResponse } from '@mapbox/mapbox-sdk/services/directions';
 import { CurrentRun, RunStart, RunSegment } from './current-run';
 import { getFormattedDistance } from './distance-formatter';
-import { MapFocus } from './map-focus';
 import { getStyleById } from './map-style';
 import { ps } from './appsettings.secrets';
-import { AnimationController } from './animation-controller';
+import { AnimationService } from './animation-service';
+import { NextSegmentService } from './next-segment-service';
+import { PreferenceService } from './preference-service';
 
-const LAST_FOCUS_KEY = 'runmap-last_focus';
-const STORAGE_NOTICE_KEY = 'runmap-help_notice';
-const USE_METRIC_KEY = 'runmap-use_metric';
-const FOLLOW_ROADS_KEY = 'runmap-follow_roads';
-const MAP_STYLE_KEY = 'runmap-map_style';
+let preferenceService = new PreferenceService();
 
-let useMetric = loadBooleanPreference(USE_METRIC_KEY);
-let followRoads = loadBooleanPreference(FOLLOW_ROADS_KEY);
+let useMetric = preferenceService.getUseMetric();
+let followRoads = preferenceService.getShouldFollowRoads();
 let isWaiting = false;
 
-const initialFocus = loadLastOrDefaultFocus();
-const mapStyle = getStyleById(loadStringPreference(MAP_STYLE_KEY, 'street-style'));
+const initialFocus = preferenceService.getLastOrDefaultFocus();
+const mapStyle = getStyleById(preferenceService.getMapStyle());
 const mbk = atob(ps);
 (mapboxgl as any)[atob('YWNjZXNzVG9rZW4=')] = mbk;
 let map = new Map({
@@ -34,12 +26,11 @@ let map = new Map({
   style: mapStyle
 });
 
-let cfg = {} as SdkConfig;
-((cfg as any)[atob('YWNjZXNzVG9rZW4=')] = mbk);
-let directionsService: DirectionsService = DirectionsFactory(cfg);
+let nextSegmentService = new NextSegmentService(mbk);
+
 let currentRun: CurrentRun = undefined;
 
-let animationController = new AnimationController(map);
+let animationService = new AnimationService(map);
 
 let lengthElement = document.getElementById('run-length');
 let unitsElement = document.getElementById('run-units');
@@ -58,8 +49,8 @@ const mapStyleElements = [streetStyleElement, satelliteStyleElement, darkStyleEl
 
 let removeLastElement = document.getElementById('remove-last');
 
-let storageElement = document.getElementById('help-notice');
-let acceptStorageElement = document.getElementById('dismiss-notice');
+let helpElement = document.getElementById('help-notice');
+let dismissHelpElement = document.getElementById('dismiss-notice');
 setupUserControls();
 
 map.on('load', () => {
@@ -74,8 +65,8 @@ map.on('load', () => {
         enableHighAccuracy: true
       },
       trackUserLocation: false
-    }).on('geolocate', (e: Position) => {
-      stashCurrentFocus(e);
+    }).on('geolocate', (p: Position) => {
+      preferenceService.saveCurrentFocus(p, map.getZoom());
     }),
     'bottom-right');
 });
@@ -93,19 +84,18 @@ map.on('click', (e: MapMouseEvent) => {
       longitude: center.lng
     }
   } as Position;
-  stashCurrentFocus(pos);
+  preferenceService.saveCurrentFocus(pos, map.getZoom());
 });
 
 // triggered upon map style changed
 map.on('style.load', () => {
-    animationController.readdRunToMap(currentRun);
+  animationService.readdRunToMap(currentRun);
 });
 
 function addNewPoint(e: MapMouseEvent): void {
   if (currentRun === undefined) {
     let start = new RunStart(
-      e.lngLat,
-      e.point
+      e.lngLat
     );
     start.setMarker(addMarker(e.lngLat, true));
     currentRun = new CurrentRun(start);
@@ -116,128 +106,44 @@ function addNewPoint(e: MapMouseEvent): void {
   } else {
     let prev = currentRun.getLastPosition();
     if (followRoads) {
-      segmentFromDirectionsResponse(prev, e);
+      addSegmentFromDirectionsResponse(prev, e);
     } else {
-      segmentFromStraightLine(prev, e);
+      addSegmentFromStraightLine(prev, e);
     }
   }
   setWaiting(false);
 }
 
-function segmentFromDirectionsResponse(previousPoint: LngLat, e: MapMouseEvent) {
-  directionsService.getDirections({
-    profile: 'walking',
-    waypoints: [
-      {
-        coordinates: [previousPoint.lng, previousPoint.lat]
-      },
-      {
-        coordinates: [e.lngLat.lng, e.lngLat.lat]
-      }
-    ],
-    geometries: 'geojson'
-  }).send().then((res: MapiResponse) => {
-    if (res.statusCode === 200) {
-      const directionsResponse = res.body as DirectionsResponse;
-      if (directionsResponse.routes.length <= 0) {
-        alert('No routes found between the two points.');
-        return;
-      }
+function addSegmentFromDirectionsResponse(previousLngLat: LngLat, e: MapMouseEvent) {
+  nextSegmentService.getSegmentFromDirectionsService(previousLngLat, e.lngLat)
+    .then((newSegment: RunSegment) => {
 
-      const route = directionsResponse.routes[0];
-      let newSegment = new RunSegment(
-        uuid(),
-        e.lngLat,
-        e.point,
-        route.distance,
-        route.geometry as LineString
-      );
-
-      const line = route.geometry as LineString;
+      const line = newSegment.geometry as LineString;
       const coordinates = line.coordinates;
-      animationController.animateSegment(newSegment);
+      animationService.animateSegment(newSegment);
 
       // use ending coordinate from route for the marker
       const segmentEnd = coordinates[coordinates.length - 1];
       const marker = addMarker(new LngLat(segmentEnd[0], segmentEnd[1]), false);
       currentRun.addSegment(newSegment, marker);
       updateLengthElement();
-    } else {
-      alert(`Non-successful status code when getting directions: ${JSON.stringify(res)}`);
-    }
-  }, err => {
-    alert(`An error occurred: ${JSON.stringify(err)}`);
-  });
+    }, err => {
+      alert(`An error occurred getting directions: ${err}`);
+    });
 }
 
-function segmentFromStraightLine(previousPoint: LngLat, e: MapMouseEvent): void {
-  const lineCoordinates = [
-    [previousPoint.lng, previousPoint.lat],
-    [e.lngLat.lng, e.lngLat.lat]
-  ];
+function addSegmentFromStraightLine(previousLngLat: LngLat, e: MapMouseEvent): void {
+  const newSegment = nextSegmentService.segmentFromStraightLine(previousLngLat, e.lngLat);
 
-  const distance = length(lineString(lineCoordinates), { units: 'meters' });
-  const line = { type: 'LineString', coordinates: lineCoordinates } as LineString;
-  let newSegment = new RunSegment(
-    uuid(),
-    e.lngLat,
-    e.point,
-    distance,
-    line
-  );
-  animationController.animateSegment(newSegment);
+  animationService.animateSegment(newSegment);
   const marker = addMarker(e.lngLat, false);
   currentRun.addSegment(newSegment, marker);
   updateLengthElement();
 }
 
-function loadLastOrDefaultFocus(): MapFocus {
-  let initialPosition = JSON.parse(localStorage.getItem(LAST_FOCUS_KEY)) as MapFocus;
-  if (initialPosition === null) {
-    initialPosition = {
-      lng: -79.93775232392454,
-      lat: 32.78183341484467,
-      zoom: 14
-    };
-  }
-  return initialPosition;
-}
-
-function stashCurrentFocus(pos: Position): void {
-  const zoom = map.getZoom();
-  const currentFocus = {
-    lng: pos.coords.longitude,
-    lat: pos.coords.latitude,
-    zoom: zoom
-  } as MapFocus;
-  localStorage.setItem(LAST_FOCUS_KEY, JSON.stringify(currentFocus));
-}
-
-function loadBooleanPreference(settingKey: string): boolean {
-  const setting = localStorage.getItem(settingKey);
-  if (setting === null) {
-    return true;
-  } else {
-    return setting === 'true';
-  }
-}
-
-function loadStringPreference(settingKey: string, defaultValue: string): string {
-  const setting = localStorage.getItem(settingKey);
-  if (setting === null) {
-    return defaultValue;
-  } else {
-    return setting;
-  }
-}
-
-function saveBooleanPreference(settingKey: string, value: boolean): void {
-  localStorage.setItem(settingKey, '' + value); // ugh
-}
-
 function setupUserControls(): void {
   showHelpElementIfNecessary();
-  acceptStorageElement.onclick = hideStorageElement;
+  dismissHelpElement.onclick = hideStorageElement;
 
   removeLastElement.onclick = removeLastSegment;
 
@@ -253,7 +159,7 @@ function setupUserControls(): void {
   followRoadsElement.onclick = () => closeMenuAction(toggleFollowRoads);
   clearRunElement.onclick = () => closeMenuAction(clearRun);
 
-  const id = loadStringPreference(MAP_STYLE_KEY, 'street-style');
+  const id = preferenceService.getMapStyle();
   setSelectedMapToggleStyles(document.getElementById(id));
   streetStyleElement.onclick = () => closeMenuAction(() => setSelectedMapToggleStyles(streetStyleElement));
   satelliteStyleElement.onclick = () => closeMenuAction(() => setSelectedMapToggleStyles(satelliteStyleElement));
@@ -266,20 +172,20 @@ function closeMenuAction(fn: () => void) {
 }
 
 function showHelpElementIfNecessary(): void {
-  if (!JSON.parse(localStorage.getItem(STORAGE_NOTICE_KEY))) {
-    storageElement.style.display = 'block';
+  if (!preferenceService.getHasAcknowledgedHelp()) {
+    helpElement.style.display = 'block';
   }
 }
 
 function hideStorageElement(): void {
-  storageElement.style.display = 'none';
-  localStorage.setItem(STORAGE_NOTICE_KEY, JSON.stringify(true));
+  helpElement.style.display = 'none';
+  preferenceService.saveHasAcknowledgedHelp(true);
 }
 
 function toggleDistanceUnits(): void {
   useMetric = !useMetric;
   updateLengthElement();
-  saveBooleanPreference(USE_METRIC_KEY, useMetric);
+  preferenceService.saveUseMetric(useMetric);
 }
 
 function toggleFollowRoads(): void {
@@ -291,7 +197,7 @@ function setSelectedMapToggleStyles(selected: HTMLElement): void {
   const elementId = selected.id;
   const style = getStyleById(elementId);
   map.setStyle(style); // layers readded on style.load
-  localStorage.setItem(MAP_STYLE_KEY, elementId);
+  preferenceService.saveMapStyle(elementId);
   for (let element of mapStyleElements) {
     element.style.color = 'inherit';
   }
@@ -367,5 +273,5 @@ function setFollowRoads(value: boolean) {
     followRoadsElement.setAttribute('aria-value', 'disabled');
   }
   followRoads = value;
-  saveBooleanPreference(FOLLOW_ROADS_KEY, value);
+  preferenceService.saveShouldFollowRoads(value);
 }

@@ -32,6 +32,7 @@ Use it for planning a route, or getting a sense of your route after a workout.
 
 ## Changelog
 
+- 11/28/20: Refactored a bit to better abstract out mapbox API, localStorage interactions
 - 6/14/20: Updates to the testing experience, take advantage of existing libraries to simplify things
 - 3/28/20: Audits, enabled Github workflows, also added extra accessiblity/aria context
 - 8/13/19: Allowed selecting map visual style

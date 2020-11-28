@@ -8,7 +8,7 @@ import { FeatureCollection, LineString } from 'geojson';
  * the length of the line. Requests while drawing will complete the
  * current animation, then kick off the next segment.
  */
-export class AnimationController {
+export class AnimationService {
   private map: Map;
 
   private animationFrame: number;

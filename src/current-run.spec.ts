@@ -1,16 +1,16 @@
 import { CurrentRun, RunStart, RunSegment } from './current-run';
-import { LngLat, Point, Marker } from 'mapbox-gl';
+import { LngLat, Marker } from 'mapbox-gl';
 import { LineString } from 'geojson';
 
 describe('CurrentRun class', () => {
   it('should initialize with a run start', () => {
-    let start = new RunStart({} as LngLat, {} as Point);
+    let start = new RunStart({} as LngLat);
     let currentRun = new CurrentRun(start);
     expect(currentRun.distance).toBe(0, 'No segments should be added with just a run start.');
   });
 
   it('should allow setting and updating a marker', () => {
-    let start = new RunStart({} as LngLat, {} as Point);
+    let start = new RunStart({} as LngLat);
     let marker = getMockMarker();
     spyOn(marker, 'remove').and.stub();
     start.setMarker(marker);
@@ -21,10 +21,10 @@ describe('CurrentRun class', () => {
   });
 
   it('updates with a new RunSegment', () => {
-    let currentRun = new CurrentRun(new RunStart({} as LngLat, {} as Point));
+    let currentRun = new CurrentRun(new RunStart({} as LngLat));
 
     let initialExpectedDistance = 500;
-    let firstSegment = new RunSegment('some-uuid', {} as LngLat, {} as Point, initialExpectedDistance, {} as LineString);
+    let firstSegment = new RunSegment('some-uuid', {} as LngLat, initialExpectedDistance, {} as LineString);
     let marker = getMockMarker();
     currentRun.addSegment(firstSegment, marker);
 
@@ -32,14 +32,14 @@ describe('CurrentRun class', () => {
     expect(firstSegment.marker).toBe(marker);
 
     let secondDistance = 1337;
-    let secondSegment = new RunSegment('different-uuid', {} as LngLat, {} as Point, secondDistance, {} as LineString);
+    let secondSegment = new RunSegment('different-uuid', {} as LngLat, secondDistance, {} as LineString);
     currentRun.addSegment(secondSegment, getMockMarker());
     expect(currentRun.distance).toBe(initialExpectedDistance + secondDistance, 'Distance did not correctly add the incoming distance response value.');
   });
 
   it('gets the start\'s LngLat', () => {
     let expectedLngLat = { lng: 101, lat: 202 } as LngLat;
-    let runStart = new RunStart(expectedLngLat, {} as Point);
+    let runStart = new RunStart(expectedLngLat);
     let currentRun = new CurrentRun(runStart);
 
     let lastPosition = currentRun.getLastPosition();
@@ -47,12 +47,12 @@ describe('CurrentRun class', () => {
   });
 
   it('removes the last run segment and decrements distance correctly', () => {
-    let runStart = new RunStart({} as LngLat, {} as Point);
+    let runStart = new RunStart({} as LngLat);
     let currentRun = new CurrentRun(runStart);
 
     let expectedLngLat = { lng: 101, lat: 202 } as LngLat;
     let expectedDistance = 100;
-    let segment = new RunSegment('some-uuid', expectedLngLat, {} as Point, expectedDistance, {} as LineString);
+    let segment = new RunSegment('some-uuid', expectedLngLat, expectedDistance, {} as LineString);
     let marker = getMockMarker();
     spyOn(marker, 'remove').and.stub();
     currentRun.addSegment(segment, marker);
@@ -71,7 +71,7 @@ describe('CurrentRun class', () => {
   });
 
   it('does not remove the run start', () => {
-    let currentRun = new CurrentRun(new RunStart({} as LngLat, {} as Point));
+    let currentRun = new CurrentRun(new RunStart({} as LngLat));
     let removed = currentRun.removeLastSegment();
     expect(removed).toBeUndefined('Removing the last point should return undefined (no segments to remove).');
   });
