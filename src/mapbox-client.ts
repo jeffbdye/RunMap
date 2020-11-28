@@ -6,6 +6,9 @@ import { LineString } from '@turf/turf';
 import uuid from 'uuid';
 import { RunSegment } from './current-run';
 
+/**
+ * Light wrapper over the mapbox directions service.
+ */
 export class MapboxClient {
   private directionsService: DirectionsService;
 
@@ -15,6 +18,12 @@ export class MapboxClient {
     this.directionsService = DirectionsFactory(cfg);
   }
 
+  /**
+   * Get the next segment for the run using a mapbox directions service request
+   * @param previousLngLat The last LngLat in the run, the starting point for the next segment
+   * @param nextLngLat The next LngLat in the run, the ending point for the next segment
+   * @param nextPoint  The next LngLat as an x,y pair
+   */
   public getSegmentFromDirectionsService(previousLngLat: LngLat, nextLngLat: LngLat, nextPoint: Point): Promise<RunSegment> {
     return this.directionsService.getDirections({
       profile: 'walking',
