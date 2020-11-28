@@ -1,4 +1,4 @@
-import { LngLat, Point, Marker } from 'mapbox-gl';
+import { LngLat, Marker } from 'mapbox-gl';
 import { LineString } from 'geojson';
 
 export class RunStart {
