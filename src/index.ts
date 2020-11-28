@@ -7,8 +7,8 @@ import { getFormattedDistance } from './distance-formatter';
 import { MapFocus } from './map-focus';
 import { getStyleById } from './map-style';
 import { ps } from './appsettings.secrets';
-import { AnimationController } from './animation-controller';
-import { MapboxClient } from './mapbox-client';
+import { AnimationService } from './animation-service';
+import { NextSegmentService } from './next-segment-service';
 
 const LAST_FOCUS_KEY = 'runmap-last_focus';
 const STORAGE_NOTICE_KEY = 'runmap-help_notice';
@@ -32,11 +32,11 @@ let map = new Map({
   style: mapStyle
 });
 
-let mapboxClient = new MapboxClient(mbk);
+let nextSegmentService = new NextSegmentService(mbk);
 
 let currentRun: CurrentRun = undefined;
 
-let animationController = new AnimationController(map);
+let animationController = new AnimationService(map);
 
 let lengthElement = document.getElementById('run-length');
 let unitsElement = document.getElementById('run-units');
@@ -112,16 +112,16 @@ function addNewPoint(e: MapMouseEvent): void {
   } else {
     let prev = currentRun.getLastPosition();
     if (followRoads) {
-      segmentFromDirectionsResponse(prev, e);
+      addSegmentFromDirectionsResponse(prev, e);
     } else {
-      segmentFromStraightLine(prev, e);
+      addSegmentFromStraightLine(prev, e);
     }
   }
   setWaiting(false);
 }
 
-function segmentFromDirectionsResponse(previouseLngLat: LngLat, e: MapMouseEvent) {
-  mapboxClient.getSegmentFromDirectionsService(previouseLngLat, e.lngLat)
+function addSegmentFromDirectionsResponse(previousLngLat: LngLat, e: MapMouseEvent) {
+  nextSegmentService.getSegmentFromDirectionsService(previousLngLat, e.lngLat)
     .then((newSegment: RunSegment) => {
 
       const line = newSegment.geometry as LineString;
@@ -138,20 +138,9 @@ function segmentFromDirectionsResponse(previouseLngLat: LngLat, e: MapMouseEvent
     });
 }
 
-function segmentFromStraightLine(previousPoint: LngLat, e: MapMouseEvent): void {
-  const lineCoordinates = [
-    [previousPoint.lng, previousPoint.lat],
-    [e.lngLat.lng, e.lngLat.lat]
-  ];
+function addSegmentFromStraightLine(previousLngLat: LngLat, e: MapMouseEvent): void {
+  let newSegment = nextSegmentService.segmentFromStraightLine(previousLngLat, e.lngLat);
 
-  const distance = length(lineString(lineCoordinates), { units: 'meters' });
-  const line = { type: 'LineString', coordinates: lineCoordinates } as LineString;
-  let newSegment = new RunSegment(
-    uuid(),
-    e.lngLat,
-    distance,
-    line
-  );
   animationController.animateSegment(newSegment);
   const marker = addMarker(e.lngLat, false);
   currentRun.addSegment(newSegment, marker);

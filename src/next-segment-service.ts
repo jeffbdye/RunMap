@@ -1,15 +1,17 @@
 import { SdkConfig } from '@mapbox/mapbox-sdk/lib/classes/mapi-client';
 import { MapiResponse } from '@mapbox/mapbox-sdk/lib/classes/mapi-response';
 import DirectionsFactory, { DirectionsService, DirectionsResponse } from '@mapbox/mapbox-sdk/services/directions';
-import { LngLat, Point } from 'mapbox-gl';
-import { LineString } from '@turf/turf';
+import { LngLat } from 'mapbox-gl';
+import { length, lineString, LineString } from '@turf/turf';
 import uuid from 'uuid';
 import { RunSegment } from './current-run';
 
 /**
- * Light wrapper over the mapbox directions service.
+ * Abstracts out the two means of adding a new segment to a run:
+ * - from the mapbox directions service
+ * - as a straight line between the previous and next points
  */
-export class MapboxClient {
+export class NextSegmentService {
   private directionsService: DirectionsService;
 
   constructor(mbk: string) {
@@ -55,5 +57,26 @@ export class MapboxClient {
     }, err => {
       throw new Error(`An error occurred: ${JSON.stringify(err)}`);
     });
+  }
+
+  /**
+   * Get the next segment as a straight line between the previous and next points
+   * @param previousLngLat The previous point in the run
+   * @param nextLngLat The next point in the run
+   */
+  public segmentFromStraightLine(previousLngLat: LngLat, nextLngLat: LngLat): RunSegment {
+    const lineCoordinates = [
+      [previousLngLat.lng, previousLngLat.lat],
+      [nextLngLat.lng, nextLngLat.lat]
+    ];
+
+    const distance = length(lineString(lineCoordinates), { units: 'meters' });
+    const line = { type: 'LineString', coordinates: lineCoordinates } as LineString;
+    return new RunSegment(
+      uuid(),
+      nextLngLat,
+      distance,
+      line
+    );
   }
 }
