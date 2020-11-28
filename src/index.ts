@@ -172,14 +172,14 @@ function closeMenuAction(fn: () => void) {
 }
 
 function showHelpElementIfNecessary(): void {
-  if (preferenceService.getIsHelpItemDisplayed) {
+  if (!preferenceService.getHasAcknowledgedHelp()) {
     helpElement.style.display = 'block';
   }
 }
 
 function hideStorageElement(): void {
   helpElement.style.display = 'none';
-  preferenceService.saveIsHelpItemDisplayed(true);
+  preferenceService.saveHasAcknowledgedHelp(true);
 }
 
 function toggleDistanceUnits(): void {

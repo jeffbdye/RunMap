@@ -56,11 +56,11 @@ export class PreferenceService {
     this.saveStringPreference(this.MAP_STYLE_KEY, value);
   }
 
-  public getIsHelpItemDisplayed(): boolean {
+  public getHasAcknowledgedHelp(): boolean {
     return this.loadBooleanPreference(this.STORAGE_NOTICE_KEY);
   }
 
-  public saveIsHelpItemDisplayed(value: boolean): void {
+  public saveHasAcknowledgedHelp(value: boolean): void {
     this.saveBooleanPreference(this.STORAGE_NOTICE_KEY, value);
   }
 
