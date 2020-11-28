@@ -9,6 +9,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: ./.github/workflows/setup-repo.yml
+    - name: Setup node
+      uses: actions/setup-node@v1.1.0
 
-    - uses: ./.github/workflows/setup-repo.yml
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: npm i
+
+    - name: Run unit tests
+      run: npm run test
