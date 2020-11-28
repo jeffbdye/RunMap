@@ -1,8 +1,8 @@
 import { SdkConfig } from '@mapbox/mapbox-sdk/lib/classes/mapi-client';
 import { MapiResponse } from '@mapbox/mapbox-sdk/lib/classes/mapi-response';
 import DirectionsFactory, { DirectionsService, DirectionsResponse } from '@mapbox/mapbox-sdk/services/directions';
-import { LineString } from '@turf/turf';
 import { LngLat, Point } from 'mapbox-gl';
+import { LineString } from '@turf/turf';
 import uuid from 'uuid';
 import { RunSegment } from './current-run';
 
