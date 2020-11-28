@@ -2,15 +2,14 @@ import mapboxgl, { Map, Marker, MapMouseEvent, NavigationControl, GeolocateContr
 import { v4 as uuid } from 'uuid';
 import { LineString } from 'geojson';
 import { length, lineString } from '@turf/turf';
-import { SdkConfig } from '@mapbox/mapbox-sdk/lib/classes/mapi-client';
 import { MapiResponse } from '@mapbox/mapbox-sdk/lib/classes/mapi-response';
-import DirectionsFactory, { DirectionsService, DirectionsResponse } from '@mapbox/mapbox-sdk/services/directions';
 import { CurrentRun, RunStart, RunSegment } from './current-run';
 import { getFormattedDistance } from './distance-formatter';
 import { MapFocus } from './map-focus';
 import { getStyleById } from './map-style';
 import { ps } from './appsettings.secrets';
 import { AnimationController } from './animation-controller';
+import { MapboxClient } from './mapbox-client';
 
 const LAST_FOCUS_KEY = 'runmap-last_focus';
 const STORAGE_NOTICE_KEY = 'runmap-help_notice';
@@ -34,9 +33,8 @@ let map = new Map({
   style: mapStyle
 });
 
-let cfg = {} as SdkConfig;
-((cfg as any)[atob('YWNjZXNzVG9rZW4=')] = mbk);
-let directionsService: DirectionsService = DirectionsFactory(cfg);
+let mapboxClient = new MapboxClient(mbk);
+
 let currentRun: CurrentRun = undefined;
 
 let animationController = new AnimationController(map);
@@ -98,7 +96,7 @@ map.on('click', (e: MapMouseEvent) => {
 
 // triggered upon map style changed
 map.on('style.load', () => {
-    animationController.readdRunToMap(currentRun);
+  animationController.readdRunToMap(currentRun);
 });
 
 function addNewPoint(e: MapMouseEvent): void {
@@ -125,35 +123,10 @@ function addNewPoint(e: MapMouseEvent): void {
 }
 
 function segmentFromDirectionsResponse(previousPoint: LngLat, e: MapMouseEvent) {
-  directionsService.getDirections({
-    profile: 'walking',
-    waypoints: [
-      {
-        coordinates: [previousPoint.lng, previousPoint.lat]
-      },
-      {
-        coordinates: [e.lngLat.lng, e.lngLat.lat]
-      }
-    ],
-    geometries: 'geojson'
-  }).send().then((res: MapiResponse) => {
-    if (res.statusCode === 200) {
-      const directionsResponse = res.body as DirectionsResponse;
-      if (directionsResponse.routes.length <= 0) {
-        alert('No routes found between the two points.');
-        return;
-      }
+  mapboxClient.getSegmentFromDirectionsService(previousPoint, e.lngLat, e.point)
+    .then((newSegment: RunSegment) => {
 
-      const route = directionsResponse.routes[0];
-      let newSegment = new RunSegment(
-        uuid(),
-        e.lngLat,
-        e.point,
-        route.distance,
-        route.geometry as LineString
-      );
-
-      const line = route.geometry as LineString;
+      const line = newSegment.geometry as LineString;
       const coordinates = line.coordinates;
       animationController.animateSegment(newSegment);
 
@@ -162,12 +135,9 @@ function segmentFromDirectionsResponse(previousPoint: LngLat, e: MapMouseEvent) 
       const marker = addMarker(new LngLat(segmentEnd[0], segmentEnd[1]), false);
       currentRun.addSegment(newSegment, marker);
       updateLengthElement();
-    } else {
-      alert(`Non-successful status code when getting directions: ${JSON.stringify(res)}`);
-    }
-  }, err => {
-    alert(`An error occurred: ${JSON.stringify(err)}`);
-  });
+    }, err => {
+      alert(`An error occurred getting directions: ${err}`);
+    });
 }
 
 function segmentFromStraightLine(previousPoint: LngLat, e: MapMouseEvent): void {
