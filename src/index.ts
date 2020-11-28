@@ -1,27 +1,21 @@
 import mapboxgl, { Map, Marker, MapMouseEvent, NavigationControl, GeolocateControl, LngLat } from 'mapbox-gl';
-import { v4 as uuid } from 'uuid';
 import { LineString } from 'geojson';
-import { length, lineString } from '@turf/turf';
 import { CurrentRun, RunStart, RunSegment } from './current-run';
 import { getFormattedDistance } from './distance-formatter';
-import { MapFocus } from './map-focus';
 import { getStyleById } from './map-style';
 import { ps } from './appsettings.secrets';
 import { AnimationService } from './animation-service';
 import { NextSegmentService } from './next-segment-service';
+import { PreferenceService } from './preference-service';
 
-const LAST_FOCUS_KEY = 'runmap-last_focus';
-const STORAGE_NOTICE_KEY = 'runmap-help_notice';
-const USE_METRIC_KEY = 'runmap-use_metric';
-const FOLLOW_ROADS_KEY = 'runmap-follow_roads';
-const MAP_STYLE_KEY = 'runmap-map_style';
+let preferenceService = new PreferenceService();
 
-let useMetric = loadBooleanPreference(USE_METRIC_KEY);
-let followRoads = loadBooleanPreference(FOLLOW_ROADS_KEY);
+let useMetric = preferenceService.getUseMetric();
+let followRoads = preferenceService.getShouldFollowRoads();
 let isWaiting = false;
 
-const initialFocus = loadLastOrDefaultFocus();
-const mapStyle = getStyleById(loadStringPreference(MAP_STYLE_KEY, 'street-style'));
+const initialFocus = preferenceService.getLastOrDefaultFocus();
+const mapStyle = getStyleById(preferenceService.getMapStyle());
 const mbk = atob(ps);
 (mapboxgl as any)[atob('YWNjZXNzVG9rZW4=')] = mbk;
 let map = new Map({
@@ -55,8 +49,8 @@ const mapStyleElements = [streetStyleElement, satelliteStyleElement, darkStyleEl
 
 let removeLastElement = document.getElementById('remove-last');
 
-let storageElement = document.getElementById('help-notice');
-let acceptStorageElement = document.getElementById('dismiss-notice');
+let helpElement = document.getElementById('help-notice');
+let dismissHelpElement = document.getElementById('dismiss-notice');
 setupUserControls();
 
 map.on('load', () => {
@@ -71,8 +65,8 @@ map.on('load', () => {
         enableHighAccuracy: true
       },
       trackUserLocation: false
-    }).on('geolocate', (e: Position) => {
-      stashCurrentFocus(e);
+    }).on('geolocate', (p: Position) => {
+      preferenceService.saveCurrentFocus(p, map.getZoom());
     }),
     'bottom-right');
 });
@@ -90,7 +84,7 @@ map.on('click', (e: MapMouseEvent) => {
       longitude: center.lng
     }
   } as Position;
-  stashCurrentFocus(pos);
+  preferenceService.saveCurrentFocus(pos, map.getZoom());
 });
 
 // triggered upon map style changed
@@ -147,53 +141,9 @@ function addSegmentFromStraightLine(previousLngLat: LngLat, e: MapMouseEvent): v
   updateLengthElement();
 }
 
-function loadLastOrDefaultFocus(): MapFocus {
-  let initialPosition = JSON.parse(localStorage.getItem(LAST_FOCUS_KEY)) as MapFocus;
-  if (initialPosition === null) {
-    initialPosition = {
-      lng: -79.93775232392454,
-      lat: 32.78183341484467,
-      zoom: 14
-    };
-  }
-  return initialPosition;
-}
-
-function stashCurrentFocus(pos: Position): void {
-  const zoom = map.getZoom();
-  const currentFocus = {
-    lng: pos.coords.longitude,
-    lat: pos.coords.latitude,
-    zoom: zoom
-  } as MapFocus;
-  localStorage.setItem(LAST_FOCUS_KEY, JSON.stringify(currentFocus));
-}
-
-function loadBooleanPreference(settingKey: string): boolean {
-  const setting = localStorage.getItem(settingKey);
-  if (setting === null) {
-    return true;
-  } else {
-    return setting === 'true';
-  }
-}
-
-function loadStringPreference(settingKey: string, defaultValue: string): string {
-  const setting = localStorage.getItem(settingKey);
-  if (setting === null) {
-    return defaultValue;
-  } else {
-    return setting;
-  }
-}
-
-function saveBooleanPreference(settingKey: string, value: boolean): void {
-  localStorage.setItem(settingKey, '' + value); // ugh
-}
-
 function setupUserControls(): void {
   showHelpElementIfNecessary();
-  acceptStorageElement.onclick = hideStorageElement;
+  dismissHelpElement.onclick = hideStorageElement;
 
   removeLastElement.onclick = removeLastSegment;
 
@@ -209,7 +159,7 @@ function setupUserControls(): void {
   followRoadsElement.onclick = () => closeMenuAction(toggleFollowRoads);
   clearRunElement.onclick = () => closeMenuAction(clearRun);
 
-  const id = loadStringPreference(MAP_STYLE_KEY, 'street-style');
+  const id = preferenceService.getMapStyle();
   setSelectedMapToggleStyles(document.getElementById(id));
   streetStyleElement.onclick = () => closeMenuAction(() => setSelectedMapToggleStyles(streetStyleElement));
   satelliteStyleElement.onclick = () => closeMenuAction(() => setSelectedMapToggleStyles(satelliteStyleElement));
@@ -222,20 +172,20 @@ function closeMenuAction(fn: () => void) {
 }
 
 function showHelpElementIfNecessary(): void {
-  if (!JSON.parse(localStorage.getItem(STORAGE_NOTICE_KEY))) {
-    storageElement.style.display = 'block';
+  if (preferenceService.getIsHelpItemDisplayed) {
+    helpElement.style.display = 'block';
   }
 }
 
 function hideStorageElement(): void {
-  storageElement.style.display = 'none';
-  localStorage.setItem(STORAGE_NOTICE_KEY, JSON.stringify(true));
+  helpElement.style.display = 'none';
+  preferenceService.saveIsHelpItemDisplayed(true);
 }
 
 function toggleDistanceUnits(): void {
   useMetric = !useMetric;
   updateLengthElement();
-  saveBooleanPreference(USE_METRIC_KEY, useMetric);
+  preferenceService.saveUseMetric(useMetric);
 }
 
 function toggleFollowRoads(): void {
@@ -247,7 +197,7 @@ function setSelectedMapToggleStyles(selected: HTMLElement): void {
   const elementId = selected.id;
   const style = getStyleById(elementId);
   map.setStyle(style); // layers readded on style.load
-  localStorage.setItem(MAP_STYLE_KEY, elementId);
+  preferenceService.saveMapStyle(elementId);
   for (let element of mapStyleElements) {
     element.style.color = 'inherit';
   }
@@ -323,5 +273,5 @@ function setFollowRoads(value: boolean) {
     followRoadsElement.setAttribute('aria-value', 'disabled');
   }
   followRoads = value;
-  saveBooleanPreference(FOLLOW_ROADS_KEY, value);
+  preferenceService.saveShouldFollowRoads(value);
 }
