@@ -36,7 +36,7 @@ let nextSegmentService = new NextSegmentService(mbk);
 
 let currentRun: CurrentRun = undefined;
 
-let animationController = new AnimationService(map);
+let animationService = new AnimationService(map);
 
 let lengthElement = document.getElementById('run-length');
 let unitsElement = document.getElementById('run-units');
@@ -95,7 +95,7 @@ map.on('click', (e: MapMouseEvent) => {
 
 // triggered upon map style changed
 map.on('style.load', () => {
-  animationController.readdRunToMap(currentRun);
+  animationService.readdRunToMap(currentRun);
 });
 
 function addNewPoint(e: MapMouseEvent): void {
@@ -126,7 +126,7 @@ function addSegmentFromDirectionsResponse(previousLngLat: LngLat, e: MapMouseEve
 
       const line = newSegment.geometry as LineString;
       const coordinates = line.coordinates;
-      animationController.animateSegment(newSegment);
+      animationService.animateSegment(newSegment);
 
       // use ending coordinate from route for the marker
       const segmentEnd = coordinates[coordinates.length - 1];
@@ -141,7 +141,7 @@ function addSegmentFromDirectionsResponse(previousLngLat: LngLat, e: MapMouseEve
 function addSegmentFromStraightLine(previousLngLat: LngLat, e: MapMouseEvent): void {
   let newSegment = nextSegmentService.segmentFromStraightLine(previousLngLat, e.lngLat);
 
-  animationController.animateSegment(newSegment);
+  animationService.animateSegment(newSegment);
   const marker = addMarker(e.lngLat, false);
   currentRun.addSegment(newSegment, marker);
   updateLengthElement();
