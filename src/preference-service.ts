@@ -1,5 +1,9 @@
 import { MapFocus } from './map-focus';
 
+/**
+ * Load user preferences for a variety of settings, currently
+ * an abstraction over localStorage
+ */
 export class PreferenceService {
   private LAST_FOCUS_KEY = 'runmap-last_focus';
   private STORAGE_NOTICE_KEY = 'runmap-help_notice';
