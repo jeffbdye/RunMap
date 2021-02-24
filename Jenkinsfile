@@ -4,15 +4,16 @@ pipeline {
         stage('Install') {
             steps {
                 echo 'Installing...'
-                sh 'npm install --dev'
+                sh 'npm install'
             }
         }
-        stage('Test') {
-           steps {
-               echo 'Testing...'
-               sh 'npm run test'
-           }
-        }
+        // Tests run using GitHub Actions
+        // stage('Test') {
+        //    steps {
+        //        echo 'Testing...'
+        //        sh 'npm run test'
+        //    }
+        // }
         stage('Secrets') {
             steps {
                 echo 'Setting up secrets...'

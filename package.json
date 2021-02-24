@@ -30,19 +30,19 @@
     "jasmine": "3.5.0",
     "jasmine-spec-reporter": "5.0.2",
     "nodemon": "2.0.4",
-    "ts-loader": "6.0.4",
     "ts-node": "8.10.2",
     "tslint": "5.18.0",
-    "typescript": "3.5.3",
-    "webpack": "4.36.1",
-    "webpack-cli": "3.3.6",
-    "webpack-dev-server": "3.11.0",
-    "webpack-merge": "4.2.1"
+    "webpack-dev-server": "3.11.0"
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "0.9.0",
     "@turf/turf": "5.1.6",
     "mapbox-gl": "1.11.0",
-    "uuid": "3.3.2"
+    "ts-loader": "6.0.4",
+    "typescript": "3.5.3",
+    "uuid": "3.3.2",
+    "webpack": "4.36.1",
+    "webpack-cli": "3.3.6",
+    "webpack-merge": "4.2.1"
   }
 }
