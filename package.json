@@ -39,7 +39,7 @@
     "@turf/turf": "5.1.6",
     "mapbox-gl": "1.11.0",
     "ts-loader": "6.0.4",
-    "typescript": "3.5.3",
+    "typescript": "4.2.2",
     "uuid": "3.3.2",
     "webpack": "4.36.1",
     "webpack-cli": "3.3.6",

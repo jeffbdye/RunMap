@@ -23,10 +23,10 @@ export class PreferenceService {
     return initialPosition;
   }
 
-  public saveCurrentFocus(pos: Position, zoom: number): void {
+  public saveCurrentFocus(position: GeolocationPosition, zoom: number): void {
     const currentFocus = {
-      lng: pos.coords.longitude,
-      lat: pos.coords.latitude,
+      lng: position.coords.longitude,
+      lat: position.coords.latitude,
       zoom: zoom
     } as MapFocus;
     this.saveJsonPreference(this.LAST_FOCUS_KEY, currentFocus);

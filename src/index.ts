@@ -65,7 +65,7 @@ map.on('load', () => {
         enableHighAccuracy: true
       },
       trackUserLocation: false
-    }).on('geolocate', (p: Position) => {
+    }).on('geolocate', (p: GeolocationPosition) => {
       preferenceService.saveCurrentFocus(p, map.getZoom());
     }),
     'bottom-right');
@@ -78,13 +78,13 @@ map.on('click', (e: MapMouseEvent) => {
     addNewPoint(e);
   }
   const center = map.getCenter();
-  const pos = {
+  const position = {
     coords: {
       latitude: center.lat,
       longitude: center.lng
     }
-  } as Position;
-  preferenceService.saveCurrentFocus(pos, map.getZoom());
+  } as GeolocationPosition;
+  preferenceService.saveCurrentFocus(position, map.getZoom());
 });
 
 // triggered upon map style changed
