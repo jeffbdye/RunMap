@@ -5,11 +5,12 @@
   "main": "bundle.js",
   "scripts": {
     "test": "jasmine-ts --config=jasmine.json",
-    "watch": "nodemon --ext ts --exec 'npm run test'",
+    "watch": "nodemon --ext ts --exec 'npm run coverage'",
     "lint": "tslint --project tslint.json",
     "serve": "webpack-dev-server --config webpack-serve.config.js",
     "init": "sh ./sh/dev-init.sh",
-    "build": "webpack --config webpack-build.config.js"
+    "build": "webpack --config webpack-build.config.js",
+    "coverage": "nyc -r lcov -e .ts -x \"*.spec.ts\" npm run test"
   },
   "repository": {
     "type": "git",
@@ -22,27 +23,28 @@
   },
   "homepage": "https://github.com/jeffbdye/RunMap#readme",
   "devDependencies": {
-    "@ganbarodigital/jasmine-ts": "0.3.1",
     "@types/jasmine": "3.3.14",
     "@types/mapbox__mapbox-sdk": "0.6.2",
     "@types/mapbox-gl": "1.8.1",
     "@types/uuid": "3.4.5",
-    "jasmine": "3.5.0",
-    "jasmine-spec-reporter": "5.0.2",
-    "nodemon": "2.0.4",
-    "ts-node": "8.10.2",
+    "jasmine": "3.9.0",
+    "jasmine-console-reporter": "3.1.0",
+    "jasmine-ts": "0.4.0",
+    "nodemon": "2.0.12",
+    "nyc": "15.1.0",
+    "ts-node": "10.2.1",
     "tslint": "5.18.0",
-    "webpack-dev-server": "3.11.0"
+    "webpack-dev-server": "4.2.1"
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "0.9.0",
     "@turf/turf": "5.1.6",
     "mapbox-gl": "1.11.0",
-    "ts-loader": "6.0.4",
-    "typescript": "4.2.2",
+    "ts-loader": "9.2.6",
+    "typescript": "4.4.3",
     "uuid": "3.3.2",
-    "webpack": "4.36.1",
-    "webpack-cli": "3.3.6",
-    "webpack-merge": "4.2.1"
+    "webpack": "5.53.0",
+    "webpack-cli": "4.8.0",
+    "webpack-merge": "5.8.0"
   }
 }
