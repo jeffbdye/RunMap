@@ -32,25 +32,25 @@ let currentRun: CurrentRun = undefined;
 
 let animationService = new AnimationService(map);
 
-let lengthElement = document.getElementById('run-length');
-let unitsElement = document.getElementById('run-units');
-let menuElement = document.getElementById('menu-toggle');
+let lengthElement = document.getElementById('run-length') as HTMLElement;
+let unitsElement = document.getElementById('run-units') as HTMLElement;
+let menuElement = document.getElementById('menu-toggle') as HTMLElement;
 
-let settingsElement = document.getElementById('settings-pane');
-let closeElement = document.getElementById('close-settings');
-let scrimElement = document.getElementById('settings-scrim');
-let toggleUnitsElement = document.getElementById('toggle-units');
-let followRoadsElement = document.getElementById('follow-roads');
-let clearRunElement = document.getElementById('clear-run');
-let streetStyleElement = document.getElementById('street-style');
-let satelliteStyleElement = document.getElementById('satellite-style');
-let darkStyleElement = document.getElementById('dark-style');
+let settingsElement = document.getElementById('settings-pane') as HTMLElement;
+let closeElement = document.getElementById('close-settings') as HTMLElement;
+let scrimElement = document.getElementById('settings-scrim') as HTMLElement;
+let toggleUnitsElement = document.getElementById('toggle-units') as HTMLElement;
+let followRoadsElement = document.getElementById('follow-roads') as HTMLElement;
+let clearRunElement = document.getElementById('clear-run') as HTMLElement;
+let streetStyleElement = document.getElementById('street-style') as HTMLElement;
+let satelliteStyleElement = document.getElementById('satellite-style') as HTMLElement;
+let darkStyleElement = document.getElementById('dark-style') as HTMLElement;
 const mapStyleElements = [streetStyleElement, satelliteStyleElement, darkStyleElement];
 
-let removeLastElement = document.getElementById('remove-last');
+let removeLastElement = document.getElementById('remove-last') as HTMLElement;
 
-let helpElement = document.getElementById('help-notice');
-let dismissHelpElement = document.getElementById('dismiss-notice');
+let helpElement = document.getElementById('help-notice') as HTMLElement;
+let dismissHelpElement = document.getElementById('dismiss-notice') as HTMLElement;
 setupUserControls();
 
 map.on('load', () => {
@@ -160,7 +160,7 @@ function setupUserControls(): void {
   clearRunElement.onclick = () => closeMenuAction(clearRun);
 
   const id = preferenceService.getMapStyle();
-  setSelectedMapToggleStyles(document.getElementById(id));
+  setSelectedMapToggleStyles(document.getElementById(id) as HTMLElement);
   streetStyleElement.onclick = () => closeMenuAction(() => setSelectedMapToggleStyles(streetStyleElement));
   satelliteStyleElement.onclick = () => closeMenuAction(() => setSelectedMapToggleStyles(satelliteStyleElement));
   darkStyleElement.onclick = () => closeMenuAction(() => setSelectedMapToggleStyles(darkStyleElement));

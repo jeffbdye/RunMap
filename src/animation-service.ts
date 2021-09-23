@@ -1,4 +1,4 @@
-import { Map, GeoJSONSource, Layer } from 'mapbox-gl';
+import { Map, GeoJSONSource, LineLayer } from 'mapbox-gl';
 import { RunSegment, CurrentRun } from './current-run';
 import { FeatureCollection, LineString } from 'geojson';
 
@@ -91,7 +91,7 @@ export class AnimationService {
     source.setData(this.activeGeo);
   }
 
-  private getLineLayer(id: string, coordinates: number[][] = []): Layer {
+  private getLineLayer(id: string, coordinates: number[][] = []): LineLayer {
     return {
       id: id,
       type: 'line',
@@ -116,6 +116,6 @@ export class AnimationService {
         'line-width': 5,
         'line-opacity': .75
       }
-    };
+    } as LineLayer;
   }
 }
