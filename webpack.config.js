@@ -17,17 +17,6 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js']
   },
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendor',
-          chunks: 'all',
-        },
-      },
-    },
-  },
   output: {
     filename: '[name].js',
     path: path.join(__dirname, 'public'),
