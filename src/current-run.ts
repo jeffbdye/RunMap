@@ -1,6 +1,11 @@
 import { LngLat, Marker } from 'mapbox-gl';
 import { LineString } from 'geojson';
 
+/**
+ * Model responsible for tracking all the segments of a run, from
+ * start to finish. Manages the map marker of the end and
+ * LineString representing the geometry from the previous point
+ */
 export class RunStart {
   public lngLat: LngLat;
   public marker: Marker;
