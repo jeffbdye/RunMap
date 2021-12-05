@@ -42,6 +42,8 @@ let scrimElement = document.getElementById('settings-scrim') as HTMLElement;
 let toggleUnitsElement = document.getElementById('toggle-units') as HTMLElement;
 let followRoadsElement = document.getElementById('follow-roads') as HTMLElement;
 let clearRunElement = document.getElementById('clear-run') as HTMLElement;
+let loadRunElement = document.getElementById('load-run') as HTMLElement;
+let saveRunElement = document.getElementById('save-run') as HTMLElement;
 let streetStyleElement = document.getElementById('street-style') as HTMLElement;
 let satelliteStyleElement = document.getElementById('satellite-style') as HTMLElement;
 let darkStyleElement = document.getElementById('dark-style') as HTMLElement;
@@ -106,21 +108,21 @@ function addNewPoint(e: MapMouseEvent): void {
   } else {
     let prev = currentRun.getLastPosition();
     if (followRoads) {
-      addSegmentFromDirectionsResponse(prev, e);
+      addSegmentFromDirectionsResponse(prev, e.lngLat);
     } else {
-      addSegmentFromStraightLine(prev, e);
+      addSegmentFromStraightLine(prev, e.lngLat);
     }
   }
   setWaiting(false);
 }
 
-function addSegmentFromDirectionsResponse(previousLngLat: LngLat, e: MapMouseEvent) {
-  nextSegmentService.getSegmentFromDirectionsService(previousLngLat, e.lngLat)
+function addSegmentFromDirectionsResponse(previousLngLat: LngLat, lngLat: LngLat, animate = true) {
+  return nextSegmentService.getSegmentFromDirectionsService(previousLngLat, lngLat)
     .then((newSegment: RunSegment) => {
 
       const line = newSegment.geometry as LineString;
       const coordinates = line.coordinates;
-      animationService.animateSegment(newSegment);
+      if (animate) animationService.animateSegment(newSegment);
 
       // use ending coordinate from route for the marker
       const segmentEnd = coordinates[coordinates.length - 1];
@@ -132,13 +134,56 @@ function addSegmentFromDirectionsResponse(previousLngLat: LngLat, e: MapMouseEve
     });
 }
 
-function addSegmentFromStraightLine(previousLngLat: LngLat, e: MapMouseEvent): void {
-  const newSegment = nextSegmentService.segmentFromStraightLine(previousLngLat, e.lngLat);
+function addSegmentFromStraightLine(previousLngLat: LngLat, lngLat: LngLat, animate = true): void {
+  const newSegment = nextSegmentService.segmentFromStraightLine(previousLngLat, lngLat);
 
-  animationService.animateSegment(newSegment);
-  const marker = addMarker(e.lngLat, false);
+  if (animate) animationService.animateSegment(newSegment);
+  const marker = addMarker(lngLat, false);
   currentRun.addSegment(newSegment, marker);
   updateLengthElement();
+}
+
+function runToJson(run: CurrentRun): string {
+  if (run === undefined) return "{}";
+  let runJSON: {[name:string]: any} = {
+    start: {
+      lng: run.start.lngLat.lng,
+      lat: run.start.lngLat.lat,
+    },
+    distance: run.distance,
+    segments: [],
+    followRoads
+  }
+  for (let i in run.segments) {
+    runJSON.segments.push({
+      lng: run.segments[i].lngLat.lng,
+      lat: run.segments[i].lngLat.lat
+    })
+  }
+  return JSON.stringify(runJSON);
+}
+
+function jsonToRun(json: string) {
+  let runJSON = JSON.parse(json);
+  let lngLat = new LngLat(runJSON.start.lng, runJSON.start.lat);
+  let start = new RunStart(lngLat);
+  start.setMarker(addMarker(lngLat, true));
+  currentRun = new CurrentRun(start);
+  let prev = lngLat;
+  for (let i = 0; i < runJSON.segments.length; i++) {
+    let lngLat = new LngLat(runJSON.segments[i].lng, runJSON.segments[i].lat);
+    if (runJSON.followRoads) {
+      addSegmentFromDirectionsResponse(prev, lngLat, false);
+    } else {
+      addSegmentFromStraightLine(prev, lngLat, false);
+    }
+    prev = lngLat;
+  }
+  setTimeout(() => animationService.readdRunToMap(currentRun), 100);
+}
+
+function loadRun(): void {
+  // TODO
 }
 
 function setupUserControls(): void {
@@ -158,6 +203,7 @@ function setupUserControls(): void {
   setFollowRoads(followRoads);
   followRoadsElement.onclick = () => closeMenuAction(toggleFollowRoads);
   clearRunElement.onclick = () => closeMenuAction(clearRun);
+  loadRunElement.onclick = () => closeMenuAction(loadRun);
 
   const id = preferenceService.getMapStyle();
   setSelectedMapToggleStyles(document.getElementById(id) as HTMLElement);
