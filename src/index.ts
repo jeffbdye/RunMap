@@ -157,8 +157,9 @@ function runToJson(run: CurrentRun): string {
   for (let i in run.segments) {
     runJSON.segments.push({
       lng: run.segments[i].lngLat.lng,
-      lat: run.segments[i].lngLat.lat
-    })
+      lat: run.segments[i].lngLat.lat,
+      followsRoads: run.segments[i].followsRoads
+    });
   }
   return JSON.stringify(runJSON);
 }
@@ -172,7 +173,7 @@ function jsonToRun(json: string) {
   let prev = lngLat;
   for (let i = 0; i < runJSON.segments.length; i++) {
     let lngLat = new LngLat(runJSON.segments[i].lng, runJSON.segments[i].lat);
-    if (runJSON.followRoads) {
+    if (runJSON.segments[i].followsRoads) {
       addSegmentFromDirectionsResponse(prev, lngLat, false);
     } else {
       addSegmentFromStraightLine(prev, lngLat, false);
