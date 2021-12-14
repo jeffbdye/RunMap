@@ -26,6 +26,10 @@ body {
   user-select: none;
 }
 
+.hidden {
+  display: none;
+}
+
 #menu-container {
   top: 12px;
   left: 12px;

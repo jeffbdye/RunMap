@@ -73,7 +73,7 @@ map.on('load', () => {
     'bottom-right');
     
   jsonToRun(preferenceService.getLastRun());
-  if (currentRun !== undefined) showRemoveLast();
+  if (currentRun !== undefined) showRunButtons();
 });
 
 // click or tap
@@ -97,10 +97,20 @@ map.on('style.load', () => {
   animationService.readdRunToMap(currentRun);
 });
 
-function showRemoveLast(): void {
+function showRunButtons(): void {
   removeLastElement.classList.remove('slide-out');
   removeLastElement.classList.add('slide-in');
   removeLastElement.setAttribute('aria-hidden', 'false');
+  saveRunElement.classList.remove('hidden');
+  clearRunElement.classList.remove('hidden');
+}
+
+function hideRunButtons(): void {
+  removeLastElement.classList.remove('slide-in');
+  removeLastElement.classList.add('slide-out');
+  removeLastElement.setAttribute('aria-hidden', 'true');
+  saveRunElement.classList.add('hidden');
+  clearRunElement.classList.add('hidden');
 }
 
 function addNewPoint(e: MapMouseEvent): void {
@@ -110,7 +120,7 @@ function addNewPoint(e: MapMouseEvent): void {
     );
     start.setMarker(addMarker(e.lngLat, true));
     currentRun = new CurrentRun(start);
-    showRemoveLast();
+    showRunButtons();
     updateLengthElement();
   } else {
     let prev = currentRun.getLastPosition();
@@ -172,7 +182,7 @@ function runToJson(run: CurrentRun): string {
   return JSON.stringify(runJSON);
 }
 
-function jsonToRun(json: string) {
+function jsonToRun(json: string): boolean {
   try { 
     let runJSON = JSON.parse(json);
     
@@ -191,14 +201,19 @@ function jsonToRun(json: string) {
       prev = lngLat;
     }
     setTimeout(() => animationService.readdRunToMap(currentRun), 100);
+    return true;
   }
-  catch {
+  catch (err) {
     currentRun = undefined;
+    console.log(err);
+    return false;
   }
 }
 
 function loadRun(): void {
   // TODO
+  // we can check the reurn value of jsonToRun in order to check if the load was successful.
+  // if it was not, display an error onscreen
 }
 
 function setupUserControls(): void {
@@ -278,9 +293,7 @@ function removeLastSegment(): void {
     currentRun.start.marker.remove();
     updateLengthElement();
     currentRun = undefined;
-    removeLastElement.classList.remove('slide-in');
-    removeLastElement.classList.add('slide-out');
-    removeLastElement.setAttribute('aria-hidden', 'true');
+    hideRunButtons();
   }
   preferenceService.saveLastRun(runToJson(currentRun));
 }
