@@ -71,6 +71,9 @@ map.on('load', () => {
       preferenceService.saveCurrentFocus(p, map.getZoom());
     }),
     'bottom-right');
+    
+  jsonToRun(preferenceService.getLastRun());
+  if (currentRun !== undefined) showRemoveLast();
 });
 
 // click or tap
@@ -94,6 +97,12 @@ map.on('style.load', () => {
   animationService.readdRunToMap(currentRun);
 });
 
+function showRemoveLast(): void {
+  removeLastElement.classList.remove('slide-out');
+  removeLastElement.classList.add('slide-in');
+  removeLastElement.setAttribute('aria-hidden', 'false');
+}
+
 function addNewPoint(e: MapMouseEvent): void {
   if (currentRun === undefined) {
     let start = new RunStart(
@@ -101,9 +110,7 @@ function addNewPoint(e: MapMouseEvent): void {
     );
     start.setMarker(addMarker(e.lngLat, true));
     currentRun = new CurrentRun(start);
-    removeLastElement.classList.remove('slide-out');
-    removeLastElement.classList.add('slide-in');
-    removeLastElement.setAttribute('aria-hidden', 'false');
+    showRemoveLast();
     updateLengthElement();
   } else {
     let prev = currentRun.getLastPosition();
@@ -114,6 +121,7 @@ function addNewPoint(e: MapMouseEvent): void {
     }
   }
   setWaiting(false);
+  setTimeout(() => preferenceService.saveLastRun(runToJson(currentRun)), 100); // for some reason this won't save right without a delay
 }
 
 function addSegmentFromDirectionsResponse(previousLngLat: LngLat, lngLat: LngLat, animate = true) {
@@ -153,7 +161,7 @@ function runToJson(run: CurrentRun): string {
     distance: run.distance,
     segments: [],
     followRoads
-  }
+  };
   for (let i in run.segments) {
     runJSON.segments.push({
       lng: run.segments[i].lngLat.lng,
@@ -165,22 +173,28 @@ function runToJson(run: CurrentRun): string {
 }
 
 function jsonToRun(json: string) {
-  let runJSON = JSON.parse(json);
-  let lngLat = new LngLat(runJSON.start.lng, runJSON.start.lat);
-  let start = new RunStart(lngLat);
-  start.setMarker(addMarker(lngLat, true));
-  currentRun = new CurrentRun(start);
-  let prev = lngLat;
-  for (let i = 0; i < runJSON.segments.length; i++) {
-    let lngLat = new LngLat(runJSON.segments[i].lng, runJSON.segments[i].lat);
-    if (runJSON.segments[i].followsRoads) {
-      addSegmentFromDirectionsResponse(prev, lngLat, false);
-    } else {
-      addSegmentFromStraightLine(prev, lngLat, false);
+  try { 
+    let runJSON = JSON.parse(json);
+    
+    let lngLat = new LngLat(runJSON.start.lng, runJSON.start.lat);
+    let start = new RunStart(lngLat);
+    start.setMarker(addMarker(lngLat, true));
+    currentRun = new CurrentRun(start);
+    let prev = lngLat;
+    for (let i = 0; i < runJSON.segments.length; i++) {
+      let lngLat = new LngLat(runJSON.segments[i].lng, runJSON.segments[i].lat);
+      if (runJSON.segments[i].followsRoads) {
+        addSegmentFromDirectionsResponse(prev, lngLat, false);
+      } else {
+        addSegmentFromStraightLine(prev, lngLat, false);
+      }
+      prev = lngLat;
     }
-    prev = lngLat;
+    setTimeout(() => animationService.readdRunToMap(currentRun), 100);
   }
-  setTimeout(() => animationService.readdRunToMap(currentRun), 100);
+  catch {
+    currentRun = undefined;
+  }
 }
 
 function loadRun(): void {
@@ -268,12 +282,14 @@ function removeLastSegment(): void {
     removeLastElement.classList.add('slide-out');
     removeLastElement.setAttribute('aria-hidden', 'true');
   }
+  preferenceService.saveLastRun(runToJson(currentRun));
 }
 
 function clearRun(): void {
   while (currentRun) {
     removeLastSegment();
   }
+  preferenceService.saveLastRun(runToJson(currentRun));
 }
 
 function updateLengthElement(): void {
