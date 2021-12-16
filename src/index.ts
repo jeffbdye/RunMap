@@ -210,6 +210,18 @@ function jsonToRun(json: string): boolean {
   }
 }
 
+function downloadRun(): void {
+  let run = runToJson(currentRun);
+  let file = new Blob([run], {
+    type: "application/json"
+  });
+  let url = URL.createObjectURL(file);
+  let link = document.createElement("a");
+  link.href = url;
+  link.download = "currentRun.runmap";
+  link.click();
+}
+
 function loadRun(): void {
   // TODO
   // we can check the reurn value of jsonToRun in order to check if the load was successful.
@@ -234,6 +246,7 @@ function setupUserControls(): void {
   followRoadsElement.onclick = () => closeMenuAction(toggleFollowRoads);
   clearRunElement.onclick = () => closeMenuAction(clearRun);
   loadRunElement.onclick = () => closeMenuAction(loadRun);
+  saveRunElement.onclick = () => closeMenuAction(downloadRun);
 
   const id = preferenceService.getMapStyle();
   setSelectedMapToggleStyles(document.getElementById(id) as HTMLElement);
