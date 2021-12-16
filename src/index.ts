@@ -39,6 +39,9 @@ let menuElement = document.getElementById('menu-toggle') as HTMLElement;
 let settingsElement = document.getElementById('settings-pane') as HTMLElement;
 let closeElement = document.getElementById('close-settings') as HTMLElement;
 let scrimElement = document.getElementById('settings-scrim') as HTMLElement;
+let uploadContainer = document.getElementById('upload-container') as HTMLElement
+let uploadForm = document.getElementById('upload-form') as HTMLElement;
+let runInput = document.getElementById('run-input') as HTMLInputElement;
 let toggleUnitsElement = document.getElementById('toggle-units') as HTMLElement;
 let followRoadsElement = document.getElementById('follow-roads') as HTMLElement;
 let clearRunElement = document.getElementById('clear-run') as HTMLElement;
@@ -222,6 +225,12 @@ function downloadRun(): void {
   link.click();
 }
 
+function showUploadForm(): void {
+  closeMenu(false);
+  uploadContainer.classList.add("showing-form");
+  uploadContainer.setAttribute('aria-hidden', 'false');
+}
+
 function loadRun(): void {
   // TODO
   // we can check the reurn value of jsonToRun in order to check if the load was successful.
@@ -238,14 +247,14 @@ function setupUserControls(): void {
   lengthElement.onclick = toggleDistanceUnits;
 
   menuElement.onclick = openMenu;
-  closeElement.onclick = closeMenu;
-  scrimElement.onclick = closeMenu;
+  closeElement.onclick = () => closeMenu();
+  scrimElement.onclick = () => closeMenu();
   toggleUnitsElement.onclick = () => closeMenuAction(toggleDistanceUnits);
 
   setFollowRoads(followRoads);
   followRoadsElement.onclick = () => closeMenuAction(toggleFollowRoads);
   clearRunElement.onclick = () => closeMenuAction(clearRun);
-  loadRunElement.onclick = () => closeMenuAction(loadRun);
+  loadRunElement.onclick = showUploadForm;
   saveRunElement.onclick = () => closeMenuAction(downloadRun);
 
   const id = preferenceService.getMapStyle();
@@ -253,6 +262,10 @@ function setupUserControls(): void {
   streetStyleElement.onclick = () => closeMenuAction(() => setSelectedMapToggleStyles(streetStyleElement));
   satelliteStyleElement.onclick = () => closeMenuAction(() => setSelectedMapToggleStyles(satelliteStyleElement));
   darkStyleElement.onclick = () => closeMenuAction(() => setSelectedMapToggleStyles(darkStyleElement));
+  
+  runInput.onchange = () => {
+    runInput.parentElement.querySelector("span").innerText = runInput.files[0].name;
+  }
 }
 
 function closeMenuAction(fn: () => void) {
@@ -346,9 +359,12 @@ function openMenu() {
   scrimElement.classList.add('scrim-shown');
 }
 
-function closeMenu() {
+function closeMenu(hideForm: boolean = true) {
   settingsElement.classList.remove('settings-open');
   settingsElement.setAttribute('aria-hidden', 'true');
+  if (!hideForm) return;
+  uploadContainer.classList.remove("showing-form");
+  uploadContainer.setAttribute('aria-hidden', 'true');
   scrimElement.classList.remove('scrim-shown');
   scrimElement.classList.add('scrim-hidden');
 }
