@@ -188,11 +188,10 @@ function runToJson(run: CurrentRun): string {
 function jsonToRun(json: string): boolean {
   try { 
     let runJSON = JSON.parse(json);
-    
     let lngLat = new LngLat(runJSON.start.lng, runJSON.start.lat);
     let start = new RunStart(lngLat);
     start.setMarker(addMarker(lngLat, true));
-    currentRun = new CurrentRun(start);
+    let newRun = new CurrentRun(start);
     let prev = lngLat;
     for (let i = 0; i < runJSON.segments.length; i++) {
       let lngLat = new LngLat(runJSON.segments[i].lng, runJSON.segments[i].lat);
@@ -203,13 +202,16 @@ function jsonToRun(json: string): boolean {
       }
       prev = lngLat;
     }
-    setTimeout(() => animationService.readdRunToMap(currentRun), 100);
+    clearRun();
+    currentRun = newRun;
     return true;
   }
   catch (err) {
-    currentRun = undefined;
     console.log(err);
     return false;
+  }
+  finally {
+    setTimeout(() => animationService.readdRunToMap(currentRun), 150);
   }
 }
 
@@ -229,12 +231,18 @@ function showUploadForm(): void {
   closeMenu(false);
   uploadContainer.classList.add("showing-form");
   uploadContainer.setAttribute('aria-hidden', 'false');
+  runInput.value = "";
 }
 
-function loadRun(): void {
-  // TODO
-  // we can check the reurn value of jsonToRun in order to check if the load was successful.
-  // if it was not, display an error onscreen
+async function loadRun(e: Event): Promise<void> {
+  e.preventDefault();
+  if (!runInput.files.length) return void (runInput.parentElement.querySelector("span").innerText = "No file selected");
+  let json = await runInput.files[0].text();
+  let loadsuccessful = jsonToRun(json);
+  if (!loadsuccessful) return void (runInput.parentElement.querySelector("span").innerText = "Error loading run");
+  closeMenu();
+  showRunButtons();
+  setTimeout(() => preferenceService.saveLastRun(runToJson(currentRun)), 100);
 }
 
 function setupUserControls(): void {
@@ -266,6 +274,7 @@ function setupUserControls(): void {
   runInput.onchange = () => {
     runInput.parentElement.querySelector("span").innerText = runInput.files[0].name;
   }
+  uploadForm.onsubmit = loadRun;
 }
 
 function closeMenuAction(fn: () => void) {
