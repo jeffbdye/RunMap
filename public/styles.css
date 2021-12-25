@@ -98,10 +98,10 @@ body {
 
 .fixed-center {
   top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	position: fixed;
-	z-index: 4;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: fixed;
+  z-index: 4;
 }
 
 #upload-container {
@@ -123,15 +123,15 @@ body {
 }
 
 .uploadbox input[type="file"] {
-	cursor: pointer;
-	position: absolute;
-	margin: 0;
-	padding: 0;
-	width: 300px;
-	height: 120px;
-	outline: none;
-	opacity: 0;
-	margin-left: -21.5%;
+  cursor: pointer;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 300px;
+  height: 120px;
+  outline: none;
+  opacity: 0;
+  margin-left: -21.5%;
 }
 
 #upload-container:not(.showing-form) {
@@ -150,8 +150,8 @@ body {
   user-select: none;
   border: none;
   -webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   height: 30px;
   width: 90px;
   background-color: rgb(75, 129, 232);
