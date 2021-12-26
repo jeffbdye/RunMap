@@ -185,7 +185,7 @@ function runToJson(run: CurrentRun): string {
   return JSON.stringify(runJSON);
 }
 
-function jsonToRun(json: string): boolean {
+function jsonToRun(json: string, changeView: boolean = false): boolean {
   try { 
     let runJSON = JSON.parse(json);
     let lngLat = new LngLat(runJSON.start.lng, runJSON.start.lat);
@@ -202,8 +202,14 @@ function jsonToRun(json: string): boolean {
       }
       prev = lngLat;
     }
-    clearRun();
+    clearRun(false);
     currentRun = newRun;
+    if (changeView) {
+      map.flyTo({
+        center: [runJSON.start.lng, runJSON.start.lat],
+        zoom: 14
+      });
+    }
     return true;
   }
   catch (err) {
@@ -223,7 +229,8 @@ function downloadRun(): void {
   let url = URL.createObjectURL(file);
   let link = document.createElement("a");
   link.href = url;
-  link.download = "currentRun.runmap";
+  let date = new Date();
+  link.download = `run-${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear() % 100}.runmap`;
   link.click();
 }
 
@@ -238,7 +245,7 @@ async function loadRun(e: Event): Promise<void> {
   e.preventDefault();
   if (!runInput.files.length) return void (runInput.parentElement.querySelector("span").innerText = "No file selected");
   let json = await runInput.files[0].text();
-  let loadsuccessful = jsonToRun(json);
+  let loadsuccessful = jsonToRun(json, true);
   if (!loadsuccessful) return void (runInput.parentElement.querySelector("span").innerText = "Error loading run");
   closeMenu();
   showRunButtons();
@@ -333,11 +340,11 @@ function removeLastSegment(): void {
   preferenceService.saveLastRun(runToJson(currentRun));
 }
 
-function clearRun(): void {
+function clearRun(commit: boolean = true): void {
   while (currentRun) {
     removeLastSegment();
   }
-  preferenceService.saveLastRun(runToJson(currentRun));
+  if (commit) preferenceService.saveLastRun(runToJson(currentRun));
 }
 
 function updateLengthElement(): void {
@@ -376,6 +383,7 @@ function closeMenu(hideForm: boolean = true) {
   uploadContainer.setAttribute('aria-hidden', 'true');
   scrimElement.classList.remove('scrim-shown');
   scrimElement.classList.add('scrim-hidden');
+  runInput.parentElement.querySelector("span").innerText = "drag a file or click here";
 }
 
 function setFollowRoads(value: boolean) {
