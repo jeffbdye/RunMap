@@ -27,12 +27,14 @@ export class RunSegment extends RunStart {
   public id: string;
   public distance: number; // in meters
   public geometry: LineString;
+  public followsRoads: boolean;
 
-  constructor(id: string, lngLat: LngLat, distance: number, geometry: LineString) {
+  constructor(id: string, lngLat: LngLat, distance: number, geometry: LineString, followsRoads: boolean) {
     super(lngLat);
     this.id = id;
     this.distance = distance;
     this.geometry = geometry;
+    this.followsRoads = followsRoads;
   }
 }
 

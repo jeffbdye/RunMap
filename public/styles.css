@@ -26,6 +26,10 @@ body {
   user-select: none;
 }
 
+.hidden {
+  display: none;
+}
+
 #menu-container {
   top: 12px;
   left: 12px;
@@ -79,10 +83,6 @@ body {
 
 #dismiss-notice {
   margin-top: 8px;
-  height: 32px;
-  width: 96px;
-  border-radius: 4px;
-  background-color: buttonface;
 }
 
 #settings-pane {
@@ -94,6 +94,74 @@ body {
   background-color: white;
   border-radius: 0px 10px 0px 0px;
   transition-duration: 0.3s;
+}
+
+.fixed-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: fixed;
+  z-index: 4;
+}
+
+#upload-container {
+  background: white;
+  border-radius: 10px;
+  transition: 0.3s;
+  padding: 5px 10px;
+  filter: drop-shadow(2px 2px 12px rgba(0, 0, 0, 0.4))
+}
+
+.uploadbox {
+  width: 300px;
+  height: 120px;
+  line-height: 120px;
+  text-align: center;
+  cursor: pointer;
+  margin: 8px 0;
+  border: 2px dashed #c0c0c0;
+}
+
+.uploadbox input[type="file"] {
+  cursor: pointer;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 300px;
+  height: 120px;
+  outline: none;
+  opacity: 0;
+  margin-left: -21.5%;
+}
+
+#upload-container:not(.showing-form) {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.1);
+}
+
+#upload-container h1 {
+  margin: 0;
+}
+
+.button {
+  margin: 0 auto;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  height: 30px;
+  width: 90px;
+  background-color: rgb(75, 129, 232);
+  color: #fff;
+  border-radius: 6px;
+  border-color: transparent;
+}
+
+.button:hover {
+  opacity: 0.85;
 }
 
 .settings-open {

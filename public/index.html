@@ -72,14 +72,39 @@
       </button>
     </li>
     <li>
-      <button id="clear-run" aria-label="Clear all points from the current run">
+      <button id="clear-run" aria-label="Clear all points from the current run" class="hidden">
         Clear run
+      </button>
+    </li>
+    <li>
+      <button id="save-run" aria-label="Save the current run to a JSON file" class="hidden">
+        Save run
+      </button>
+    </li>
+    <li>
+      <button id="load-run" aria-label="Load a run from a JSON file">
+        Load run
       </button>
     </li>
     <li>
       <a href="about.html" target="_blank">About</a>
     </li>
   </ul>
+</div>
+
+<div id="upload-container" aria-hidden="false" class="fixed-center">
+  <form id="upload-form">
+    <h1>
+      Load a run
+    </h1>
+    <div class="uploadbox">
+      <input type="file" id="run-input">
+      <span>  
+        drag a file or click here
+      </span>
+    </div>
+    <input type="submit" class="button" value="Upload!">
+  </form>
 </div>
 
 <div id="settings-scrim" aria-hidden="true"></div>
@@ -115,7 +140,7 @@
     Click/tap anywhere on the map to add points in order to map out your run! See the <a target="_blank" href="about.html">about page</a> to
     learn more.
   </div>
-  <button id="dismiss-notice">Got it!</button>
+  <button id="dismiss-notice" class="button">Got it!</button>
 </div>
 
 <noscript>

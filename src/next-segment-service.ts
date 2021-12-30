@@ -49,7 +49,8 @@ export class NextSegmentService {
           uuid(),
           nextLngLat,
           route.distance,
-          route.geometry as LineString
+          route.geometry as LineString,
+          true
         );
       } else {
         throw new Error(`Non-successful status code when getting directions: ${JSON.stringify(res)}`);
@@ -76,7 +77,8 @@ export class NextSegmentService {
       uuid(),
       nextLngLat,
       distance,
-      line
+      line,
+      false
     );
   }
 }
