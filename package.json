@@ -28,13 +28,13 @@
     "@types/mapbox-gl": "2.4.2",
     "@types/uuid": "3.4.5",
     "jasmine": "3.9.0",
-    "jasmine-console-reporter": "3.1.0",
+    "jasmine-console-reporter": "2.0.1",
     "jasmine-ts": "0.4.0",
     "nodemon": "2.0.12",
     "nyc": "15.1.0",
     "ts-node": "10.2.1",
     "tslint": "5.18.0",
-    "webpack-dev-server": "4.2.1"
+    "webpack-dev-server": "4.7.4"
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "0.13.2",
