@@ -14,15 +14,15 @@ pipeline {
         //        sh 'npm run test'
         //    }
         // }
-        stage('Secrets') {
-            steps {
-                echo 'Setting up secrets...'
-                sh 'rm ./src/appsettings.secrets.ts -f'
-                withCredentials([file(credentialsId: 'MAPBOX_SECRET', variable: 'MAPBOX_SECRET')]) {
-                    sh 'cp $MAPBOX_SECRET ./src/appsettings.secrets.ts';
-                }
-            }
-        }
+        // stage('Secrets') {
+        //     steps {
+        //         echo 'Setting up secrets...'
+        //         sh 'rm ./src/appsettings.secrets.ts -f'
+        //         withCredentials([file(credentialsId: 'MAPBOX_SECRET', variable: 'MAPBOX_SECRET')]) {
+        //             sh 'cp $MAPBOX_SECRET ./src/appsettings.secrets.ts';
+        //         }
+        //     }
+        // }
         stage('Bundle') {
             steps {
                 echo 'Bundling...'
